@@ -1,0 +1,13 @@
+{
+  "checkpoint": "/home/valerio/universit\u00e0/master_thesis/experiments/baseline/checkpoints/baseline-run_1-best.pt",
+  "checkpoint_epoch": 9,
+  "weights": "ema",
+  "mode": "single",
+  "classes": [
+    "River"
+  ],
+  "num_samples": 100,
+  "inference_steps": 50,
+  "guidance_scale": 3.0,
+  "seed": 42
+}

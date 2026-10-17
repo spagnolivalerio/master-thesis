@@ -1,0 +1,71 @@
+{
+  "experiment": {
+    "name": "baseline",
+    "seed": 42
+  },
+  "data": {
+    "dataset": "MS",
+    "root": "data/EuroSAT_MS",
+    "image_size": 64,
+    "channels": 13,
+    "num_classes": 10,
+    "split": {
+      "train": 0.9,
+      "validation": 0.05,
+      "test": 0.05
+    },
+    "normalization": "per_band_standardization",
+    "normalization_max": 10000,
+    "rgb_display_max": 0.3,
+    "statistics_batch_size": 64,
+    "band_names": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10", "B11", "B12", "B8A"],
+    "wavelengths_nm": [443, 490, 560, 665, 705, 740, 783, 842, 945, 1375, 1610, 2190, 865]
+  },
+  "model": {
+    "base_channels": 128,
+    "channel_multipliers": [1, 2, 2],
+    "num_res_blocks": 2,
+    "dropout": 0.0,
+    "attention_head_dim": 8,
+    "norm_num_groups": 32
+  },
+  "diffusion": {
+    "timesteps": 1000,
+    "beta_schedule": "squaredcos_cap_v2",
+    "prediction_type": "epsilon",
+    "clip_sample": false
+  },
+  "cfg": {
+    "enabled": true,
+    "condition_dropout": 0.1,
+    "guidance_scale": 3.0
+  },
+  "training": {
+    "epochs": 100,
+    "batch_size": 10,
+    "gradient_accumulation_steps": 3,
+    "learning_rate": 0.0001,
+    "warmup_steps": 500,
+    "max_grad_norm": 1.0,
+    "ema_decay": 0.9999,
+    "num_workers": 4,
+    "mixed_precision": "fp16",
+    "gradient_checkpointing": true,
+    "pin_memory": true,
+    "preview_inference_steps": 50,
+    "log_every": 100,
+    "resume": false
+  },
+  "sampling": {
+    "num_samples": 1000,
+    "batch_size": 8,
+    "inference_steps": 50
+  },
+  "paths": {
+    "checkpoints": "experiments/baseline/checkpoints",
+    "logs": "experiments/baseline/log",
+    "previews": "outputs/previews/baseline",
+    "results": "outputs/results/baseline"
+  }
+}
+

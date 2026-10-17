@@ -1,0 +1,2 @@
+"""Baseline DDPM condizionale autosufficiente."""
+
