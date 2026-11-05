@@ -1,4 +1,4 @@
-"""Confronta le RMC annotate reali e sintetiche, con media ±1 SD tra immagini."""
+"""Confronta RMC reali e sintetiche su pixel annotati e non, con media ±1 SD."""
 
 import json
 import sys
@@ -19,30 +19,40 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from experiments.latent_unmixing_per_class.utils import load_config
 
 
-def read_region_spectrum(image_path, mask_path, scale, mask_class):
-    """Restituisce la firma media dei soli pixel della classe annotata."""
+def read_region_spectrum(image_path, mask_path, scale, mask_class, unannotated=False):
+    """Firma media della classe annotata o dei pixel non assegnati (ID 0)."""
     with Image.open(mask_path) as mask:
-        classes = json.loads(mask.info["Classes"])
-        class_id = next(item["id"] for item in classes if item["name"] == mask_class)
+        if unannotated:
+            class_id = 0
+        else:
+            classes = json.loads(mask.info["Classes"])
+            class_id = next(item["id"] for item in classes if item["name"] == mask_class)
         selected = np.asarray(mask) == class_id
     if not selected.any():
+        if unannotated:
+            return None
         raise ValueError(f"Nessun pixel {mask_class!r} in {mask_path}")
     image = tifffile.imread(image_path).astype(np.float64) / scale
     return image[selected].mean(axis=0)
 
 
-def collect_spectra(image_directory, mask_directory, scale, mask_class):
+def collect_spectra(image_directory, mask_directory, scale, mask_class, unannotated=False):
     """Una firma per immagine: le regioni grandi non ricevono un peso maggiore."""
     spectra = []
     for image_path in sorted(image_directory.glob("*.tif")):
         mask_path = mask_directory / f"{image_path.stem}_annotation.png"
-        spectra.append(read_region_spectrum(image_path, mask_path, scale, mask_class))
+        spectrum = read_region_spectrum(image_path, mask_path, scale, mask_class, unannotated)
+        if spectrum is not None:
+            spectra.append(spectrum)
     if len(spectra) < 2:
-        raise ValueError(f"Servono almeno due immagini per stimare la varianza: {image_directory}")
+        region = "non annotati" if unannotated else f"annotati {mask_class!r}"
+        raise ValueError(
+            f"Servono almeno due immagini con pixel {region} per stimare la varianza: {image_directory}"
+        )
     return np.stack(spectra)
 
 
-def plot_rmc(real, fake, config, directory):
+def plot_rmc(real, fake, config, directory, unannotated=False):
     """Sovrappone le medie e le fasce ±1 SD delle firme delle singole immagini."""
     wavelengths = np.asarray(config["data"]["wavelengths_nm"])
     order = np.argsort(wavelengths)
@@ -60,13 +70,15 @@ def plot_rmc(real, fake, config, directory):
     axis.set_xlabel("Wavelength (nm)")
     axis.set_ylabel("Reflectance")
     mask_class = config["annotation_evaluation"]["mask_class"]
-    axis.set_title(f"Real and fake RMCs — annotated {mask_class}")
+    region = "unannotated pixels" if unannotated else f"annotated {mask_class}"
+    axis.set_title(f"Real and fake RMCs — {region}")
     axis.grid(alpha=0.25, linestyle="--")
     axis.legend()
     figure.tight_layout(rect=(0, 0.06, 1, 1))
     directory.mkdir(parents=True, exist_ok=True)
+    prefix = "unannotated" if unannotated else "annotated"
     for extension in ("png", "pdf"):
-        figure.savefig(directory / f"annotated_rmc_comparison.{extension}", dpi=180)
+        figure.savefig(directory / f"{prefix}_rmc_comparison.{extension}", dpi=180)
     plt.close(figure)
 
 
@@ -74,15 +86,19 @@ def main():
     config = load_config()
     root = Path(config["paths"]["annotation_images"])
     mask_class = config["annotation_evaluation"]["mask_class"]
-    # EuroSAT reale usa valori scalati; i TIFF sintetici sono già riflettanze.
-    real = collect_spectra(
-        root / "real", root / "real_mask",
-        config["data"]["normalization_max"], mask_class,
-    )
-    fake = collect_spectra(root / "fake", root / "fake_mask", 1.0, mask_class)
     directory = Path(config["paths"]["annotation_plots"])
-    plot_rmc(real, fake, config, directory)
-    print(f"Real: {len(real)} immagini; fake: {len(fake)} immagini")
+    for unannotated in (False, True):
+        # EuroSAT reale usa valori scalati; i TIFF sintetici sono già riflettanze.
+        real = collect_spectra(
+            root / "real", root / "real_mask",
+            config["data"]["normalization_max"], mask_class, unannotated,
+        )
+        fake = collect_spectra(
+            root / "fake", root / "fake_mask", 1.0, mask_class, unannotated,
+        )
+        plot_rmc(real, fake, config, directory, unannotated)
+        region = "Non annotati" if unannotated else f"Annotati {mask_class}"
+        print(f"{region} — real: {len(real)} immagini; fake: {len(fake)} immagini")
     print(f"Grafici salvati in {directory}")
 
 

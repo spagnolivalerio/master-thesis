@@ -1,4 +1,9 @@
 {
+  "_comment": [
+    "annotation_evaluation: classe delle maschere per il confronto RMC",
+    "paths.annotation_images: TIFF e maschere reali e sintetiche; annotation_plots: output dei grafici",
+    "fid_evaluation: batch size e caricamento dati della FID RGB per classe; percorsi in paths.fid_*"
+  ],
   "experiment": {
     "name": "baseline",
     "seed": 42
@@ -61,11 +66,23 @@
     "batch_size": 8,
     "inference_steps": 50
   },
+  "annotation_evaluation": {
+    "mask_class": "water"
+  },
+  "fid_evaluation": {
+    "batch_size": 32,
+    "num_workers": 0
+  },
   "paths": {
     "checkpoints": "experiments/baseline/checkpoints",
     "logs": "experiments/baseline/log",
     "previews": "outputs/previews/baseline",
-    "results": "outputs/results/baseline"
+    "results": "outputs/results/baseline",
+    "annotation_images": "experiments/baseline/eval/img",
+    "annotation_plots": "outputs/results/baseline/baseline-sampling_4-baseline-run_1/plots",
+    "fid_real_images": "data/EuroSAT_RGB",
+    "fid_fake_images": "experiments/baseline/eval/all_samples",
+    "fid_results": "outputs/results/baseline/baseline-eval_1-run_1/plots/fid"
   }
 }
 

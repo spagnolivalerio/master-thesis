@@ -5,7 +5,8 @@
     "simplex: ILR con statistiche distinte per classe stimate sul training set",
     "ddpm_model: singola U-Net condizionale che genera campi ILR",
     "evaluation: la classe seleziona statistiche ILR e basi per la decodifica",
-    "annotation_evaluation: classe delle maschere per il confronto RMC; input e output in paths.annotation_*"
+    "annotation_evaluation: classe delle maschere per il confronto RMC; input e output in paths.annotation_*",
+    "fid_evaluation: batch size e caricamento dati della FID RGB per classe; percorsi in paths.fid_*"
   ],
   "experiment": {
     "name": "latent_unmixing_per_class",
@@ -98,6 +99,10 @@
   "annotation_evaluation": {
     "mask_class": "water"
   },
+  "fid_evaluation": {
+    "batch_size": 32,
+    "num_workers": 0
+  },
   "paths": {
     "encoder_checkpoints": "experiments/latent_unmixing_per_class/encoder_checkpoints",
     "encoder_logs": "experiments/latent_unmixing_per_class/log/encoder",
@@ -107,7 +112,10 @@
     "ddpm_previews": "outputs/previews/latent_unmixing_per_class_ddpm",
     "results": "outputs/results/latent_unmixing_per_class",
     "annotation_images": "experiments/latent_unmixing_per_class/eval/imgs",
-    "annotation_plots": "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-run_1/plots"
+    "annotation_plots": "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-run_1/plots",
+    "fid_real_images": "data/EuroSAT_RGB",
+    "fid_fake_images": "experiments/latent_unmixing_per_class/eval/all_samples",
+    "fid_results": "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-run_1/plots/fid"
   }
 }
 

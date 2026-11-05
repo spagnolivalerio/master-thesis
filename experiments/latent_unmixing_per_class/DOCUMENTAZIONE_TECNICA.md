@@ -15,6 +15,7 @@ codice attuale, senza introdurre modifiche al modello.
 
 1. [Scope: problema, architettura, dati e limiti](#1-scope-problema-architettura-dati-e-limiti)
 2. [Blocchi necessari e loro motivazione](#2-blocchi-necessari-e-loro-motivazione)
+   - [Processo ILR: significato, trasformazione e inversa](#24-conversione-ilr-e-standardizzazione-per-classe)
 3. [Flusso dei dati: concetto e implementazione](#3-flusso-dei-dati-concetto-e-implementazione)
 4. [Preview, salvataggio dei risultati e analisi](#4-preview-salvataggio-dei-risultati-e-analisi)
 5. [Orientarsi nelle modifiche e nei requisiti](#5-orientarsi-nelle-modifiche-e-nei-requisiti)
@@ -359,6 +360,58 @@ Due dettagli da conoscere prima di cambiare dataset o split:
 Tutto il blocco si trova in [utils.py](utils.py). È utile leggerlo come due
 operazioni separate: **cambiare coordinate** e **cambiare scala**.
 
+#### Cosa fa la ILR e su quali dati agisce
+
+La ILR (*isometric log-ratio*) trasforma, **pixel per pixel**, i pesi di miscela
+prodotti dall'encoder in coordinate reali utilizzabili dal DDPM. Agisce sulle
+abundance, non direttamente sulle tredici bande o sulle basi spettrali.
+Non ha parametri appresi: una volta fissati `K` e l'ordine delle componenti,
+la matrice della trasformazione è deterministica e comune a tutte le classi.
+La parte specifica della classe è la successiva standardizzazione.
+
+Per un pixel, il dominio matematico della ILR è l'interno del simplesso:
+
+```text
+S^(K-1) = {a ∈ R^K : a_k > 0 per ogni k, Σ_k a_k = 1}
+ILR: S^(K-1) → R^(K-1)
+```
+
+Con tre basi, per esempio, `a = (0.5, 0.3, 0.2)` significa che il decoder
+miscela il 50%, il 30% e il 20% delle tre basi della classe. La terza quota
+è già determinata dalle prime due: `a_3 = 1 - a_1 - a_2`. Ecco perché bastano
+due coordinate, anche se le abundance hanno tre canali.
+
+La trasformazione conserva l'informazione sui **rapporti relativi** fra pesi:
+il rapporto `a_1/a_2` descrive quanto prevale la prima base sulla seconda.
+Il logaritmo converte i rapporti in differenze, perché
+`log(a_i/a_j) = log(a_i) - log(a_j)`. Invertire un rapporto ne cambia il
+segno; rapporti uguali a uno danno zero. Si ottengono così valori sia positivi
+sia negativi, senza imporre al DDPM vincoli di positività o somma unitaria.
+
+Nel caso ideale, senza clamp e arrotondamenti, il passaggio da `K` a `K-1`
+canali **non perde informazione**: elimina solo una coordinata ridondante.
+Non è una PCA, non seleziona le componenti più importanti e non riduce la
+risoluzione spaziale. L'eventuale perdita di informazione spettrale avviene
+prima, nella rappresentazione dell'immagine tramite `K` basi.
+
+Il flusso completo è:
+
+```text
+a [B,K,H,W]        abundance prodotte dall'encoder
+  ↓ soglia epsilon e logaritmo naturale
+log(a)            logaritmi dei pesi protetti dalla soglia
+  ↓ sottrazione della media sui K canali, per ciascun pixel
+clr [B,K,H,W]     K valori con somma zero
+  ↓ proiezione sulla base ortonormale di Helmert
+u [B,K-1,H,W]     coordinate ILR grezze
+  ↓ sottrazione della media e divisione per la std della classe
+z [B,K-1,H,W]     coordinate standardizzate usate dal DDPM
+```
+
+Le prime operazioni usano soltanto i pesi del singolo pixel. La
+standardizzazione usa invece statistiche fisse stimate su tutti i pixel di
+training della classe, non statistiche ricalcolate per immagine o per batch.
+
 #### Passo A — Dalle abundance ai logaritmi centrati
 
 `_raw_ILR` converte in `float32` e applica:
@@ -378,6 +431,20 @@ per la stessa costante aggiunge lo stesso valore ai logaritmi, che scompare
 con il centraggio. Il clamp, invece, modifica davvero i rapporti che coinvolgono
 componenti sotto soglia.
 
+Per esplicitare il significato del centraggio, poniamo
+`ã_k = max(a_k, epsilon)` e definiamo la media geometrica dei pesi protetti:
+
+```text
+g(ã) = (∏_k ã_k)^(1/K)
+clr_k = log(ã_k) - (1/K) Σ_j log(ã_j) = log(ã_k / g(ã))
+Σ_k clr_k = 0
+```
+
+Ogni canale CLR misura quindi il peso di una componente rispetto alla media
+geometrica di tutte le componenti. Un valore positivo indica un peso superiore
+a questa media; un valore negativo indica un peso inferiore. Per abundance
+uniformi `a_k = 1/K`, tutti i valori CLR sono zero.
+
 #### Passo B — Dai K logaritmi centrati a K-1 coordinate
 
 `helmert_basis(K, dtype=..., device=...)` costruisce una matrice `V` di forma
@@ -388,22 +455,62 @@ Vᵀ V = I,   Vᵀ 1 = 0
 u = Vᵀ clr                  per ogni pixel
 ```
 
+Con indici matematici a partire da uno, la colonna `q`, per `q=1,…,K-1`, è:
+
+```text
+V[k,q] =  1 / √(q(q+1))       se 1 ≤ k ≤ q
+V[k,q] = -q / √(q(q+1))       se k = q+1
+V[k,q] =  0                  se k > q+1
+```
+
+Le colonne sono direzioni perpendicolari di lunghezza unitaria nel piano dei
+logaritmi centrati. Poiché quel piano ha dimensione `K-1`, queste colonne lo
+descrivono interamente: la proiezione rimuove la ridondanza senza scartare
+direzioni ammissibili. **Ortonormali non significa statisticamente
+indipendenti**: i valori delle coordinate possono essere correlati nei dati.
+
 L'implementazione applica la stessa matrice a tutti i pixel:
 
 ```python
 raw_latents = torch.einsum("bkhw,kq->bqhw", clr, basis)
 ```
 
+`k` è il canale delle abundance e `q` è il canale ILR; batch, altezza e
+larghezza restano invariati. La formula generale di ciascuna coordinata è:
+
+```text
+u_q = [Σ_(k=1)^q log(ã_k) - q log(ã_(q+1))] / √(q(q+1))
+    = √(q/(q+1)) log(g(ã_1,…,ã_q) / ã_(q+1))
+```
+
+Qui `g(ã_1,…,ã_q)` è la media geometrica delle prime `q` componenti.
+Ogni coordinata è un **bilanciamento**: confronta il gruppo delle prime
+`q` basi con la base successiva. Un valore positivo favorisce il gruppo;
+zero indica uguaglianza fra la sua media geometrica e il peso della base
+successiva; un valore negativo favorisce quest'ultima.
+
 Per `K=3`, la costruzione corrisponde alle coordinate:
 
 ```text
+V = [ 1/√2    1/√6 ]
+    [-1/√2    1/√6 ]
+    [  0     -2/√6 ]
+
 u_1 = log(a_1 / a_2) / √2
 u_2 = [log(a_1) + log(a_2) - 2 log(a_3)] / √6
 ```
 
+In queste due formule si assume che nessun peso sia sotto `epsilon`;
+altrimenti si sostituiscono le `a_k` con le `ã_k`.
 La prima confronta due componenti; la seconda confronta la loro media
 geometrica con la terza. Le coordinate possono essere negative senza alcun
 problema: rappresentano rapporti, non percentuali.
+
+Con le sei basi dell'esempio di configurazione si ottengono cinque confronti:
+`a_1` contro `a_2`, `g(a_1,a_2)` contro `a_3`, fino a
+`g(a_1,…,a_5)` contro `a_6`, ciascuno con il proprio fattore di normalizzazione.
+Le colonne di `V` non sono le basi spettrali `E`: `V` cambia coordinate fra
+pesi, mentre `E` converte i pesi in uno spettro multispettrale.
 
 Perché non usare altre rappresentazioni?
 
@@ -414,6 +521,26 @@ Perché non usare altre rappresentazioni?
 | CLR | Rimuove quella direzione, ma conserva `K` canali soggetti al vincolo di somma zero; il rumore gaussiano indipendente ordinario non resta in quel sottospazio |
 | ALR, rapporti a una componente di riferimento | Usa `K-1` canali, ma privilegia un denominatore e non fornisce in generale coordinate ortonormali della geometria composizionale |
 | ILR con un'altra base ortonormale | È possibile, ma cambia le coordinate viste dalla U-Net e richiede coerenza in training, statistiche e inversa |
+
+#### In quale senso la trasformazione è isometrica
+
+La proprietà teorica riguarda la distanza di Aitchison fra composizioni
+strettamente positive. Con la convenzione di distanza qui usata:
+
+```text
+d_A(a,b)² = (1/(2K)) Σ_i Σ_j [log(a_i/a_j) - log(b_i/b_j)]²
+         = ||clr(a) - clr(b)||₂²
+         = ||ILR(a) - ILR(b)||₂²
+```
+
+La base ortonormale permette quindi di misurare questa distanza con la
+normale distanza euclidea nelle coordinate grezze.
+[Egozcue et al., 2003](https://doi.org/10.1023/A:1023818214614)
+
+Per l'implementazione seguono due precisazioni. Se interviene il clamp, si
+rappresentano le composizioni modificate dalla soglia. Inoltre, dividere ogni
+coordinata per una std diversa cambia il peso delle direzioni: la distanza fra
+`z` standardizzate non coincide più, in generale, con `d_A`.
 
 #### Passo C — Statistiche e trasformazione usata dal DDPM
 
@@ -426,6 +553,15 @@ popolazione, con un limite inferiore `simplex.statistics_epsilon` sulla std.
 `epsilon`, `num_components`, `latent_channels`, `num_classes` e il nome della
 trasformazione. `_class_statistics` seleziona le righe indicate dalle label e
 le porta alla forma `[B,K-1,1,1]`, per applicarle a tutti i pixel.
+
+Indicando con `P_y` l'insieme di tutti i pixel di training della classe `y`,
+le statistiche corrispondono a:
+
+```text
+m[y,q] = (1/|P_y|) Σ_(p∈P_y) u[q,p]
+v[y,q] = max((1/|P_y|) Σ_(p∈P_y) u[q,p]² - m[y,q]², 0)
+s[y,q] = max(√v[y,q], statistics_epsilon)
+```
 
 `to_ILR` restituisce dunque **ILR standardizzate**, non quelle grezze:
 
@@ -465,10 +601,100 @@ La softmax ricostruisce una composizione valida da coordinate reali finite.
 Clamp e rinormalizzazione stabilizzano le componenti molto piccole: dopo la
 rinormalizzazione il limite esatto non è necessariamente `epsilon`.
 
+L'inversa si comprende da `V Vᵀ = I - 11ᵀ/K`: applicare `V` alle coordinate
+`u = Vᵀ clr` ricostruisce esattamente il vettore `clr`, perché la sua somma
+è già zero. Nel caso senza clamp:
+
+```text
+exp(clr_k) = a_k / g(a)
+softmax(clr)_k = exp(clr_k) / Σ_j exp(clr_j)
+              = (a_k/g(a)) / (Σ_j a_j/g(a)) = a_k
+```
+
+La softmax esegue dunque l'esponenziale seguito dalla normalizzazione a somma
+uno; il fattore comune `g(a)` si cancella. Per coordinate generate arbitrarie
+ma finite, la stessa operazione produce comunque pesi sul simplesso, entro
+la precisione numerica e con la protezione finale del clamp.
+
 Omettere l'inversa della standardizzazione farebbe interpretare `z` come `u`,
 modificando i rapporti delle abundance. Usare le statistiche di un'altra classe
 farebbe la stessa cosa in modo dipendente dalla classe. Usare un banco diverso
 assocerebbe infine quei pesi ad altri spettri.
+
+#### Esempio numerico completo su un pixel
+
+Per rendere i calcoli leggibili, consideriamo tre basi e pesi tutti sopra
+soglia. Media e std seguenti sono **valori illustrativi**, non statistiche
+misurate su EuroSAT. I risultati sono arrotondati a sei decimali.
+
+| Passaggio | Operazione | Risultato |
+| --- | --- | --- |
+| Abundance | `a = (0.5, 0.3, 0.2)` | Tre pesi con somma uno |
+| Logaritmi naturali | `log(a)` | `(-0.693147, -1.203973, -1.609438)` |
+| Media geometrica | `g(a) = (0.5·0.3·0.2)^(1/3)` | `0.310723` |
+| CLR | `log(a) - media(log(a))` | `(0.475706, -0.035120, -0.440585)` |
+| ILR grezza | `u = Vᵀ clr` | `(0.361208, 0.539605)` |
+| Statistiche della classe | `m_y = (0.1, 0.2)`, `s_y = (0.5, 2.0)` | Una coppia per ciascuna coordinata |
+| Dato pulito per il DDPM | `z = (u - m_y) / s_y` | `(0.522417, 0.169802)` |
+| Inversa della standardizzazione | `u = z ⊙ s_y + m_y` | `(0.361208, 0.539605)` |
+| Inversa della proiezione | `clr = V u` | `(0.475706, -0.035120, -0.440585)` |
+| Ritorno alle abundance | `softmax(clr)` | `(0.5, 0.3, 0.2)` |
+
+Il decoder usa infine questi pesi per tutte le bande:
+`x_hat[c] = 0.5 E[y,1,c] + 0.3 E[y,2,c] + 0.2 E[y,3,c]`.
+Qui gli indici delle basi partono da uno; nel codice partono da zero.
+
+Un caso utile da distinguere: `u = 0` corrisponde ad abundance uniformi,
+mentre `z = 0` corrisponde a `u = m_y`. Quest'ultimo è il centro dei
+log-rapporti di training della classe; le abundance ottenute invertendolo
+non sono necessariamente uniformi né uguali alla media aritmetica dei pesi.
+
+#### Ruolo nel processo di diffusione e limiti pratici
+
+Durante il training DDPM, il dato pulito è `z_0 = to_ILR(a, y, ilr_stats)`.
+Lo scheduler costruisce il dato rumoroso nello spazio reale:
+
+```text
+z_t = √ᾱ_t z_0 + √(1 - ᾱ_t) ε,     ε ∼ N(0,I)
+```
+
+Le coordinate intermedie possono assumere qualsiasi valore reale: non occorre
+che sommino a uno. La U-Net impara a predire `ε` in questo spazio. Durante
+il sampling, il denoising produce una stima finale di `z_0`, che viene
+convertita da `from_ILR` in abundance e poi decodificata con `E_y`.
+
+Si può leggere l'effetto del rumore sui rapporti in modo esplicito. Ignorando
+il clamp finale, per una variazione `Δz` e statistiche della classe fisse:
+
+```text
+Δu = s_y ⊙ Δz
+log(a'_i/a'_j) - log(a_i/a_j) = (V Δu)_i - (V Δu)_j
+a'_i/a'_j = (a_i/a_j) exp((V Δu)_i - (V Δu)_j)
+```
+
+Una perturbazione additiva del latente diventa quindi una variazione
+moltiplicativa dei rapporti fra pesi. Non è rumore additivo di riflettanza:
+l'effetto sullo spettro dipende sia dalle abundance iniziali sia dal banco
+`E_y`. La trasformazione garantisce una parametrizzazione coerente dei pesi,
+ma la plausibilità fisica degli spettri dipende ancora dalle basi e dalla
+distribuzione appresa.
+
+Gli aspetti da preservare nel codice sono:
+
+- **Stessa rappresentazione in andata e ritorno:** `K`, ordine delle basi,
+  matrice di Helmert, label e statistiche devono essere coerenti con il
+  checkpoint. La ILR è fissa, ma i pesi che rappresenta dipendono dall'encoder
+  e dal banco della classe.
+- **Gestione del bordo:** quando un peso tende a zero, alcuni log-rapporti
+  divergono. Il clamp introduce un'approssimazione numerica e non permette
+  di rappresentare l'assenza esatta di una base. Non impone sparsità.
+- **Due soglie distinte:** `simplex.epsilon` protegge i pesi prima del log e
+  dopo la softmax inversa; `simplex.statistics_epsilon` protegge la divisione
+  per std. Nessuna delle due è una quantità appresa.
+- **Trasformazione separata dall'apprendimento:** nello stadio encoder si
+  ottimizza la ricostruzione, senza ILR nella loss; nello stadio DDPM la ILR
+  è applicata alle abundance dell'encoder congelato. Non è un terzo modello
+  da addestrare.
 
 ### 2.5 Encoder e decoder
 
@@ -968,7 +1194,7 @@ appaiato immagine per immagine. Una RMC vicina non dimostra dettaglio spaziale,
 diversità o correttezza della distribuzione spettrale completa: immagini molto
 diverse possono avere la stessa media.
 
-### 4.4 Analisi di regioni annotate
+### 4.4 Analisi di regioni annotate e non annotate
 
 `eval/eval_ann.py` è un percorso separato, che legge immagini e maschere PNG
 già disponibili nei percorsi `annotation_*` del config. Non addestra il modello
@@ -976,13 +1202,20 @@ e non crea annotazioni.
 
 `read_region_spectrum` legge dai metadati PNG `Classes` l'ID della classe
 `annotation_evaluation.mask_class`, seleziona i pixel corrispondenti e ne
-calcola la firma media. `collect_spectra` produce una firma per immagine:
-regioni più grandi non ricevono un peso maggiore nella media finale.
+calcola la firma media. Ripete poi il confronto sui soli pixel **non annotati**,
+identificati dal valore `0` nelle maschere SAPw. Non usa il complemento della
+classe selezionata: altre classi annotate e background `255` sono esclusi dal
+gruppo non annotato. `collect_spectra` produce una firma per immagine e regione:
+regioni più grandi non ricevono un peso maggiore nella media finale. Le immagini
+senza pixel non annotati vengono escluse da quel confronto.
 
-Qui `plot_rmc` usa deviazione standard **campionaria**, `ddof=1`, e richiede
-almeno due immagini per gruppo. È una convenzione diversa dalla SD di
-popolazione dell'evaluation generale. I grafici PNG e PDF sono salvati sotto
-`paths.annotation_plots`, in `outputs/`.
+Qui `plot_rmc` usa deviazione standard **campionaria**, `ddof=1`, una
+convenzione diversa dalla SD di popolazione dell'evaluation generale.
+Per ciascuna regione servono almeno due
+immagini valide per gruppo. I confronti reali/sintetiche sono salvati come
+`annotated_rmc_comparison.{png,pdf}` e `unannotated_rmc_comparison.{png,pdf}`
+sotto `paths.annotation_plots`, in `outputs/`. Lo script di baseline applica
+gli stessi calcoli, con i percorsi del proprio esperimento.
 
 ## 5. Orientarsi nelle modifiche e nei requisiti
 
