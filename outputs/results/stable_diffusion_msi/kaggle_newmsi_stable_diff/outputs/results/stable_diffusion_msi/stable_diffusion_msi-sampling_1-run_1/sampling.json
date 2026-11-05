@@ -1,0 +1,4928 @@
+{
+  "complete": true,
+  "created_utc": "2026-11-04T23:51:37.295802+00:00",
+  "checkpoint": {
+    "path": "/kaggle/working/experiments/stable_diffusion_msi/sd_checkpoints/stable_diffusion_msi_sd-run_1/best.pt",
+    "sha256": "8c21daa667a280e3fd32d00f0de116e3b2618098ec2cdb994be2b674f5207280",
+    "run_name": "stable_diffusion_msi_sd-run_1",
+    "epoch": 10,
+    "weights": "ema"
+  },
+  "vae": {
+    "path": "/kaggle/working/experiments/stable_diffusion_msi/vae_checkpoints/stable_diffusion_msi_vae-run_1/best.pt",
+    "sha256": "62cf636bbc8a95cf698f00a29f3ff041395df7a5ddcbcf49b02fd8973ac8aa1f",
+    "epoch": 9
+  },
+  "config": {
+    "experiment": {
+      "name": "stable_diffusion_msi",
+      "seed": 42
+    },
+    "data": {
+      "root": null,
+      "image_size": 64,
+      "channels": 13,
+      "num_classes": 10,
+      "normalization_max": 10000.0,
+      "rgb_display_max": 0.3,
+      "band_names": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "B8",
+        "B9",
+        "B10",
+        "B11",
+        "B12",
+        "B8A"
+      ],
+      "wavelengths_nm": [
+        443,
+        490,
+        560,
+        665,
+        705,
+        740,
+        783,
+        842,
+        945,
+        1375,
+        1610,
+        2190,
+        865
+      ],
+      "split": {
+        "train": 0.9,
+        "validation": 0.05,
+        "test": 0.05
+      },
+      "split_manifest": null
+    },
+    "training": {
+      "batch_size": 10,
+      "validation_batch_size": 20,
+      "num_workers": 2,
+      "pin_memory": true
+    },
+    "vae_model": {
+      "model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+      "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+      "initialization": "pretrained_body_random_io"
+    },
+    "vae_training": {
+      "epochs": 10,
+      "learning_rate": 0.0001,
+      "kl_weight": 0.0001,
+      "max_grad_norm": 1.0,
+      "mixed_precision": "no",
+      "gradient_checkpointing": true,
+      "resume": true,
+      "resume_checkpoint": null
+    },
+    "sd_model": {
+      "lora_rank": 16,
+      "target_modules": [
+        "to_q",
+        "to_k",
+        "to_v",
+        "to_out.0",
+        "conv_in",
+        "conv_out"
+      ],
+      "prompts": {
+        "AnnualCrop": "satellite image of annual crop fields",
+        "Forest": "satellite image of a forest",
+        "HerbaceousVegetation": "satellite image of herbaceous vegetation",
+        "Highway": "satellite image of a highway",
+        "Industrial": "satellite image of an industrial area",
+        "Pasture": "satellite image of pastures",
+        "PermanentCrop": "satellite image of permanent crop fields",
+        "Residential": "satellite image of a residential area",
+        "River": "satellite image of a river",
+        "SeaLake": "satellite image of a sea or lake"
+      }
+    },
+    "cfg": {
+      "condition_dropout": 0.1,
+      "guidance_scale": 3.0
+    },
+    "sd_training": {
+      "epochs": 10,
+      "learning_rate": 0.0001,
+      "max_grad_norm": 1.0,
+      "mixed_precision": "fp16",
+      "gradient_checkpointing": true,
+      "ema_decay": 0.9999,
+      "validation_seed": 123,
+      "preview_seed": 42,
+      "preview_inference_steps": 50,
+      "resume": true,
+      "resume_checkpoint": null,
+      "vae_checkpoint": null
+    },
+    "sampling": {
+      "num_samples": 100,
+      "batch_size": 8,
+      "inference_steps": 50,
+      "seed": 4242
+    },
+    "evaluation": {
+      "batch_size": 20
+    },
+    "paths": {
+      "results": "/kaggle/working/outputs/results/stable_diffusion_msi",
+      "vae_checkpoints": "/kaggle/working/experiments/stable_diffusion_msi/vae_checkpoints",
+      "vae_logs": "/kaggle/working/experiments/stable_diffusion_msi/log/vae",
+      "vae_previews": "/kaggle/working/outputs/previews/stable_diffusion_msi_vae",
+      "sd_checkpoints": "/kaggle/working/experiments/stable_diffusion_msi/sd_checkpoints",
+      "sd_logs": "/kaggle/working/experiments/stable_diffusion_msi/log/sd",
+      "sd_previews": "/kaggle/working/outputs/previews/stable_diffusion_msi_sd"
+    }
+  },
+  "sampling": {
+    "num_samples": 100,
+    "batch_size": 8,
+    "inference_steps": 50,
+    "seed": 4242
+  },
+  "guidance_scale": 3.0,
+  "noise_scheduler_config": {
+    "num_train_timesteps": 1000,
+    "beta_start": 0.00085,
+    "beta_end": 0.012,
+    "beta_schedule": "scaled_linear",
+    "trained_betas": null,
+    "variance_type": "fixed_small",
+    "clip_sample": false,
+    "prediction_type": "epsilon",
+    "thresholding": false,
+    "dynamic_thresholding_ratio": 0.995,
+    "clip_sample_range": 1.0,
+    "sample_max_value": 1.0,
+    "timestep_spacing": "leading",
+    "steps_offset": 1,
+    "rescale_betas_zero_snr": false,
+    "_use_default_values": [
+      "clip_sample_range",
+      "timestep_spacing",
+      "rescale_betas_zero_snr",
+      "thresholding",
+      "variance_type",
+      "sample_max_value",
+      "prediction_type",
+      "dynamic_thresholding_ratio"
+    ],
+    "_class_name": "DDPMScheduler",
+    "_diffusers_version": "0.6.0",
+    "set_alpha_to_one": false,
+    "skip_prk_steps": true
+  },
+  "device": "cuda:0",
+  "device_name": "Tesla T4",
+  "mixed_precision": "fp16",
+  "versions": {
+    "torch": "2.11.0+cu130",
+    "diffusers": "0.39.0",
+    "numpy": "2.1.3"
+  },
+  "split_manifest": "split_manifest.json",
+  "classes": [
+    {
+      "class_name": "AnnualCrop",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 4242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 4250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 4258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 4266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 4274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 4282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 4290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 4298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 4306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 4314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 4322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 4330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 4338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00000.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00000.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00001.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00001.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00002.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00002.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00003.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00003.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00004.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00004.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00005.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00005.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00006.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00006.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00007.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00007.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00008.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00008.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00009.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00009.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00010.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00010.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00011.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00011.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00012.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00012.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00013.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00013.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00014.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00014.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00015.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00015.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00016.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00016.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00017.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00017.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00018.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00018.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00019.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00019.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00020.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00020.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00021.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00021.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00022.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00022.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00023.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00023.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00024.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00024.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00025.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00025.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00026.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00026.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00027.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00027.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00028.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00028.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00029.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00029.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00030.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00030.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00031.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00031.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00032.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00032.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00033.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00033.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00034.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00034.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00035.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00035.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00036.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00036.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00037.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00037.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00038.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00038.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00039.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00039.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00040.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00040.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00041.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00041.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00042.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00042.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00043.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00043.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00044.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00044.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00045.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00045.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00046.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00046.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00047.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00047.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00048.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00048.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00049.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00049.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00050.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00050.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00051.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00051.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00052.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00052.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00053.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00053.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00054.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00054.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00055.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00055.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00056.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00056.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00057.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00057.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00058.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00058.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00059.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00059.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00060.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00060.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00061.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00061.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00062.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00062.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00063.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00063.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00064.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00064.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00065.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00065.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00066.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00066.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00067.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00067.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00068.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00068.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00069.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00069.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00070.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00070.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00071.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00071.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00072.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00072.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00073.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00073.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00074.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00074.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00075.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00075.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00076.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00076.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00077.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00077.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00078.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00078.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00079.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00079.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00080.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00080.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00081.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00081.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00082.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00082.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00083.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00083.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00084.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00084.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00085.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00085.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00086.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00086.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00087.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00087.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00088.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00088.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00089.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00089.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00090.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00090.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00091.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00091.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00092.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00092.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00093.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00093.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00094.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00094.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00095.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00095.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00096.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00096.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00097.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00097.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00098.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00098.png"
+        },
+        {
+          "ms": "samples/AnnualCrop/MS/AnnualCrop_00099.tif",
+          "rgb": "samples/AnnualCrop/RGB/AnnualCrop_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "Forest",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 1004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 1004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 1004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 1004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 1004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 1004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 1004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 1004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 1004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 1004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 1004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 1004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 1004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/Forest/MS/Forest_00000.tif",
+          "rgb": "samples/Forest/RGB/Forest_00000.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00001.tif",
+          "rgb": "samples/Forest/RGB/Forest_00001.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00002.tif",
+          "rgb": "samples/Forest/RGB/Forest_00002.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00003.tif",
+          "rgb": "samples/Forest/RGB/Forest_00003.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00004.tif",
+          "rgb": "samples/Forest/RGB/Forest_00004.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00005.tif",
+          "rgb": "samples/Forest/RGB/Forest_00005.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00006.tif",
+          "rgb": "samples/Forest/RGB/Forest_00006.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00007.tif",
+          "rgb": "samples/Forest/RGB/Forest_00007.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00008.tif",
+          "rgb": "samples/Forest/RGB/Forest_00008.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00009.tif",
+          "rgb": "samples/Forest/RGB/Forest_00009.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00010.tif",
+          "rgb": "samples/Forest/RGB/Forest_00010.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00011.tif",
+          "rgb": "samples/Forest/RGB/Forest_00011.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00012.tif",
+          "rgb": "samples/Forest/RGB/Forest_00012.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00013.tif",
+          "rgb": "samples/Forest/RGB/Forest_00013.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00014.tif",
+          "rgb": "samples/Forest/RGB/Forest_00014.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00015.tif",
+          "rgb": "samples/Forest/RGB/Forest_00015.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00016.tif",
+          "rgb": "samples/Forest/RGB/Forest_00016.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00017.tif",
+          "rgb": "samples/Forest/RGB/Forest_00017.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00018.tif",
+          "rgb": "samples/Forest/RGB/Forest_00018.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00019.tif",
+          "rgb": "samples/Forest/RGB/Forest_00019.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00020.tif",
+          "rgb": "samples/Forest/RGB/Forest_00020.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00021.tif",
+          "rgb": "samples/Forest/RGB/Forest_00021.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00022.tif",
+          "rgb": "samples/Forest/RGB/Forest_00022.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00023.tif",
+          "rgb": "samples/Forest/RGB/Forest_00023.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00024.tif",
+          "rgb": "samples/Forest/RGB/Forest_00024.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00025.tif",
+          "rgb": "samples/Forest/RGB/Forest_00025.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00026.tif",
+          "rgb": "samples/Forest/RGB/Forest_00026.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00027.tif",
+          "rgb": "samples/Forest/RGB/Forest_00027.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00028.tif",
+          "rgb": "samples/Forest/RGB/Forest_00028.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00029.tif",
+          "rgb": "samples/Forest/RGB/Forest_00029.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00030.tif",
+          "rgb": "samples/Forest/RGB/Forest_00030.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00031.tif",
+          "rgb": "samples/Forest/RGB/Forest_00031.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00032.tif",
+          "rgb": "samples/Forest/RGB/Forest_00032.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00033.tif",
+          "rgb": "samples/Forest/RGB/Forest_00033.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00034.tif",
+          "rgb": "samples/Forest/RGB/Forest_00034.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00035.tif",
+          "rgb": "samples/Forest/RGB/Forest_00035.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00036.tif",
+          "rgb": "samples/Forest/RGB/Forest_00036.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00037.tif",
+          "rgb": "samples/Forest/RGB/Forest_00037.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00038.tif",
+          "rgb": "samples/Forest/RGB/Forest_00038.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00039.tif",
+          "rgb": "samples/Forest/RGB/Forest_00039.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00040.tif",
+          "rgb": "samples/Forest/RGB/Forest_00040.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00041.tif",
+          "rgb": "samples/Forest/RGB/Forest_00041.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00042.tif",
+          "rgb": "samples/Forest/RGB/Forest_00042.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00043.tif",
+          "rgb": "samples/Forest/RGB/Forest_00043.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00044.tif",
+          "rgb": "samples/Forest/RGB/Forest_00044.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00045.tif",
+          "rgb": "samples/Forest/RGB/Forest_00045.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00046.tif",
+          "rgb": "samples/Forest/RGB/Forest_00046.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00047.tif",
+          "rgb": "samples/Forest/RGB/Forest_00047.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00048.tif",
+          "rgb": "samples/Forest/RGB/Forest_00048.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00049.tif",
+          "rgb": "samples/Forest/RGB/Forest_00049.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00050.tif",
+          "rgb": "samples/Forest/RGB/Forest_00050.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00051.tif",
+          "rgb": "samples/Forest/RGB/Forest_00051.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00052.tif",
+          "rgb": "samples/Forest/RGB/Forest_00052.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00053.tif",
+          "rgb": "samples/Forest/RGB/Forest_00053.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00054.tif",
+          "rgb": "samples/Forest/RGB/Forest_00054.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00055.tif",
+          "rgb": "samples/Forest/RGB/Forest_00055.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00056.tif",
+          "rgb": "samples/Forest/RGB/Forest_00056.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00057.tif",
+          "rgb": "samples/Forest/RGB/Forest_00057.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00058.tif",
+          "rgb": "samples/Forest/RGB/Forest_00058.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00059.tif",
+          "rgb": "samples/Forest/RGB/Forest_00059.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00060.tif",
+          "rgb": "samples/Forest/RGB/Forest_00060.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00061.tif",
+          "rgb": "samples/Forest/RGB/Forest_00061.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00062.tif",
+          "rgb": "samples/Forest/RGB/Forest_00062.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00063.tif",
+          "rgb": "samples/Forest/RGB/Forest_00063.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00064.tif",
+          "rgb": "samples/Forest/RGB/Forest_00064.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00065.tif",
+          "rgb": "samples/Forest/RGB/Forest_00065.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00066.tif",
+          "rgb": "samples/Forest/RGB/Forest_00066.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00067.tif",
+          "rgb": "samples/Forest/RGB/Forest_00067.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00068.tif",
+          "rgb": "samples/Forest/RGB/Forest_00068.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00069.tif",
+          "rgb": "samples/Forest/RGB/Forest_00069.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00070.tif",
+          "rgb": "samples/Forest/RGB/Forest_00070.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00071.tif",
+          "rgb": "samples/Forest/RGB/Forest_00071.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00072.tif",
+          "rgb": "samples/Forest/RGB/Forest_00072.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00073.tif",
+          "rgb": "samples/Forest/RGB/Forest_00073.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00074.tif",
+          "rgb": "samples/Forest/RGB/Forest_00074.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00075.tif",
+          "rgb": "samples/Forest/RGB/Forest_00075.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00076.tif",
+          "rgb": "samples/Forest/RGB/Forest_00076.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00077.tif",
+          "rgb": "samples/Forest/RGB/Forest_00077.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00078.tif",
+          "rgb": "samples/Forest/RGB/Forest_00078.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00079.tif",
+          "rgb": "samples/Forest/RGB/Forest_00079.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00080.tif",
+          "rgb": "samples/Forest/RGB/Forest_00080.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00081.tif",
+          "rgb": "samples/Forest/RGB/Forest_00081.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00082.tif",
+          "rgb": "samples/Forest/RGB/Forest_00082.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00083.tif",
+          "rgb": "samples/Forest/RGB/Forest_00083.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00084.tif",
+          "rgb": "samples/Forest/RGB/Forest_00084.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00085.tif",
+          "rgb": "samples/Forest/RGB/Forest_00085.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00086.tif",
+          "rgb": "samples/Forest/RGB/Forest_00086.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00087.tif",
+          "rgb": "samples/Forest/RGB/Forest_00087.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00088.tif",
+          "rgb": "samples/Forest/RGB/Forest_00088.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00089.tif",
+          "rgb": "samples/Forest/RGB/Forest_00089.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00090.tif",
+          "rgb": "samples/Forest/RGB/Forest_00090.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00091.tif",
+          "rgb": "samples/Forest/RGB/Forest_00091.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00092.tif",
+          "rgb": "samples/Forest/RGB/Forest_00092.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00093.tif",
+          "rgb": "samples/Forest/RGB/Forest_00093.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00094.tif",
+          "rgb": "samples/Forest/RGB/Forest_00094.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00095.tif",
+          "rgb": "samples/Forest/RGB/Forest_00095.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00096.tif",
+          "rgb": "samples/Forest/RGB/Forest_00096.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00097.tif",
+          "rgb": "samples/Forest/RGB/Forest_00097.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00098.tif",
+          "rgb": "samples/Forest/RGB/Forest_00098.png"
+        },
+        {
+          "ms": "samples/Forest/MS/Forest_00099.tif",
+          "rgb": "samples/Forest/RGB/Forest_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "HerbaceousVegetation",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 2004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 2004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 2004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 2004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 2004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 2004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 2004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 2004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 2004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 2004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 2004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 2004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 2004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00000.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00000.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00001.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00001.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00002.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00002.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00003.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00003.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00004.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00004.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00005.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00005.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00006.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00006.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00007.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00007.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00008.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00008.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00009.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00009.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00010.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00010.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00011.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00011.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00012.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00012.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00013.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00013.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00014.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00014.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00015.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00015.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00016.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00016.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00017.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00017.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00018.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00018.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00019.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00019.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00020.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00020.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00021.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00021.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00022.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00022.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00023.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00023.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00024.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00024.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00025.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00025.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00026.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00026.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00027.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00027.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00028.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00028.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00029.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00029.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00030.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00030.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00031.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00031.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00032.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00032.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00033.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00033.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00034.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00034.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00035.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00035.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00036.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00036.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00037.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00037.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00038.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00038.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00039.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00039.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00040.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00040.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00041.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00041.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00042.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00042.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00043.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00043.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00044.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00044.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00045.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00045.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00046.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00046.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00047.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00047.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00048.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00048.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00049.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00049.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00050.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00050.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00051.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00051.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00052.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00052.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00053.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00053.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00054.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00054.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00055.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00055.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00056.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00056.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00057.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00057.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00058.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00058.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00059.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00059.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00060.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00060.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00061.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00061.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00062.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00062.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00063.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00063.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00064.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00064.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00065.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00065.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00066.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00066.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00067.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00067.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00068.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00068.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00069.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00069.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00070.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00070.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00071.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00071.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00072.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00072.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00073.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00073.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00074.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00074.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00075.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00075.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00076.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00076.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00077.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00077.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00078.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00078.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00079.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00079.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00080.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00080.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00081.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00081.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00082.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00082.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00083.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00083.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00084.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00084.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00085.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00085.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00086.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00086.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00087.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00087.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00088.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00088.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00089.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00089.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00090.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00090.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00091.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00091.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00092.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00092.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00093.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00093.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00094.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00094.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00095.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00095.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00096.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00096.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00097.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00097.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00098.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00098.png"
+        },
+        {
+          "ms": "samples/HerbaceousVegetation/MS/HerbaceousVegetation_00099.tif",
+          "rgb": "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "Highway",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 3004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 3004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 3004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 3004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 3004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 3004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 3004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 3004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 3004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 3004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 3004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 3004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 3004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/Highway/MS/Highway_00000.tif",
+          "rgb": "samples/Highway/RGB/Highway_00000.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00001.tif",
+          "rgb": "samples/Highway/RGB/Highway_00001.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00002.tif",
+          "rgb": "samples/Highway/RGB/Highway_00002.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00003.tif",
+          "rgb": "samples/Highway/RGB/Highway_00003.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00004.tif",
+          "rgb": "samples/Highway/RGB/Highway_00004.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00005.tif",
+          "rgb": "samples/Highway/RGB/Highway_00005.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00006.tif",
+          "rgb": "samples/Highway/RGB/Highway_00006.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00007.tif",
+          "rgb": "samples/Highway/RGB/Highway_00007.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00008.tif",
+          "rgb": "samples/Highway/RGB/Highway_00008.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00009.tif",
+          "rgb": "samples/Highway/RGB/Highway_00009.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00010.tif",
+          "rgb": "samples/Highway/RGB/Highway_00010.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00011.tif",
+          "rgb": "samples/Highway/RGB/Highway_00011.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00012.tif",
+          "rgb": "samples/Highway/RGB/Highway_00012.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00013.tif",
+          "rgb": "samples/Highway/RGB/Highway_00013.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00014.tif",
+          "rgb": "samples/Highway/RGB/Highway_00014.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00015.tif",
+          "rgb": "samples/Highway/RGB/Highway_00015.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00016.tif",
+          "rgb": "samples/Highway/RGB/Highway_00016.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00017.tif",
+          "rgb": "samples/Highway/RGB/Highway_00017.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00018.tif",
+          "rgb": "samples/Highway/RGB/Highway_00018.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00019.tif",
+          "rgb": "samples/Highway/RGB/Highway_00019.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00020.tif",
+          "rgb": "samples/Highway/RGB/Highway_00020.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00021.tif",
+          "rgb": "samples/Highway/RGB/Highway_00021.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00022.tif",
+          "rgb": "samples/Highway/RGB/Highway_00022.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00023.tif",
+          "rgb": "samples/Highway/RGB/Highway_00023.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00024.tif",
+          "rgb": "samples/Highway/RGB/Highway_00024.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00025.tif",
+          "rgb": "samples/Highway/RGB/Highway_00025.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00026.tif",
+          "rgb": "samples/Highway/RGB/Highway_00026.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00027.tif",
+          "rgb": "samples/Highway/RGB/Highway_00027.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00028.tif",
+          "rgb": "samples/Highway/RGB/Highway_00028.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00029.tif",
+          "rgb": "samples/Highway/RGB/Highway_00029.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00030.tif",
+          "rgb": "samples/Highway/RGB/Highway_00030.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00031.tif",
+          "rgb": "samples/Highway/RGB/Highway_00031.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00032.tif",
+          "rgb": "samples/Highway/RGB/Highway_00032.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00033.tif",
+          "rgb": "samples/Highway/RGB/Highway_00033.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00034.tif",
+          "rgb": "samples/Highway/RGB/Highway_00034.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00035.tif",
+          "rgb": "samples/Highway/RGB/Highway_00035.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00036.tif",
+          "rgb": "samples/Highway/RGB/Highway_00036.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00037.tif",
+          "rgb": "samples/Highway/RGB/Highway_00037.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00038.tif",
+          "rgb": "samples/Highway/RGB/Highway_00038.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00039.tif",
+          "rgb": "samples/Highway/RGB/Highway_00039.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00040.tif",
+          "rgb": "samples/Highway/RGB/Highway_00040.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00041.tif",
+          "rgb": "samples/Highway/RGB/Highway_00041.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00042.tif",
+          "rgb": "samples/Highway/RGB/Highway_00042.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00043.tif",
+          "rgb": "samples/Highway/RGB/Highway_00043.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00044.tif",
+          "rgb": "samples/Highway/RGB/Highway_00044.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00045.tif",
+          "rgb": "samples/Highway/RGB/Highway_00045.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00046.tif",
+          "rgb": "samples/Highway/RGB/Highway_00046.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00047.tif",
+          "rgb": "samples/Highway/RGB/Highway_00047.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00048.tif",
+          "rgb": "samples/Highway/RGB/Highway_00048.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00049.tif",
+          "rgb": "samples/Highway/RGB/Highway_00049.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00050.tif",
+          "rgb": "samples/Highway/RGB/Highway_00050.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00051.tif",
+          "rgb": "samples/Highway/RGB/Highway_00051.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00052.tif",
+          "rgb": "samples/Highway/RGB/Highway_00052.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00053.tif",
+          "rgb": "samples/Highway/RGB/Highway_00053.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00054.tif",
+          "rgb": "samples/Highway/RGB/Highway_00054.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00055.tif",
+          "rgb": "samples/Highway/RGB/Highway_00055.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00056.tif",
+          "rgb": "samples/Highway/RGB/Highway_00056.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00057.tif",
+          "rgb": "samples/Highway/RGB/Highway_00057.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00058.tif",
+          "rgb": "samples/Highway/RGB/Highway_00058.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00059.tif",
+          "rgb": "samples/Highway/RGB/Highway_00059.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00060.tif",
+          "rgb": "samples/Highway/RGB/Highway_00060.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00061.tif",
+          "rgb": "samples/Highway/RGB/Highway_00061.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00062.tif",
+          "rgb": "samples/Highway/RGB/Highway_00062.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00063.tif",
+          "rgb": "samples/Highway/RGB/Highway_00063.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00064.tif",
+          "rgb": "samples/Highway/RGB/Highway_00064.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00065.tif",
+          "rgb": "samples/Highway/RGB/Highway_00065.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00066.tif",
+          "rgb": "samples/Highway/RGB/Highway_00066.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00067.tif",
+          "rgb": "samples/Highway/RGB/Highway_00067.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00068.tif",
+          "rgb": "samples/Highway/RGB/Highway_00068.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00069.tif",
+          "rgb": "samples/Highway/RGB/Highway_00069.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00070.tif",
+          "rgb": "samples/Highway/RGB/Highway_00070.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00071.tif",
+          "rgb": "samples/Highway/RGB/Highway_00071.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00072.tif",
+          "rgb": "samples/Highway/RGB/Highway_00072.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00073.tif",
+          "rgb": "samples/Highway/RGB/Highway_00073.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00074.tif",
+          "rgb": "samples/Highway/RGB/Highway_00074.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00075.tif",
+          "rgb": "samples/Highway/RGB/Highway_00075.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00076.tif",
+          "rgb": "samples/Highway/RGB/Highway_00076.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00077.tif",
+          "rgb": "samples/Highway/RGB/Highway_00077.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00078.tif",
+          "rgb": "samples/Highway/RGB/Highway_00078.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00079.tif",
+          "rgb": "samples/Highway/RGB/Highway_00079.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00080.tif",
+          "rgb": "samples/Highway/RGB/Highway_00080.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00081.tif",
+          "rgb": "samples/Highway/RGB/Highway_00081.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00082.tif",
+          "rgb": "samples/Highway/RGB/Highway_00082.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00083.tif",
+          "rgb": "samples/Highway/RGB/Highway_00083.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00084.tif",
+          "rgb": "samples/Highway/RGB/Highway_00084.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00085.tif",
+          "rgb": "samples/Highway/RGB/Highway_00085.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00086.tif",
+          "rgb": "samples/Highway/RGB/Highway_00086.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00087.tif",
+          "rgb": "samples/Highway/RGB/Highway_00087.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00088.tif",
+          "rgb": "samples/Highway/RGB/Highway_00088.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00089.tif",
+          "rgb": "samples/Highway/RGB/Highway_00089.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00090.tif",
+          "rgb": "samples/Highway/RGB/Highway_00090.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00091.tif",
+          "rgb": "samples/Highway/RGB/Highway_00091.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00092.tif",
+          "rgb": "samples/Highway/RGB/Highway_00092.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00093.tif",
+          "rgb": "samples/Highway/RGB/Highway_00093.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00094.tif",
+          "rgb": "samples/Highway/RGB/Highway_00094.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00095.tif",
+          "rgb": "samples/Highway/RGB/Highway_00095.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00096.tif",
+          "rgb": "samples/Highway/RGB/Highway_00096.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00097.tif",
+          "rgb": "samples/Highway/RGB/Highway_00097.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00098.tif",
+          "rgb": "samples/Highway/RGB/Highway_00098.png"
+        },
+        {
+          "ms": "samples/Highway/MS/Highway_00099.tif",
+          "rgb": "samples/Highway/RGB/Highway_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "Industrial",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 4004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 4004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 4004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 4004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 4004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 4004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 4004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 4004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 4004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 4004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 4004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 4004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 4004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/Industrial/MS/Industrial_00000.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00000.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00001.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00001.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00002.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00002.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00003.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00003.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00004.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00004.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00005.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00005.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00006.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00006.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00007.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00007.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00008.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00008.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00009.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00009.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00010.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00010.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00011.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00011.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00012.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00012.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00013.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00013.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00014.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00014.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00015.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00015.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00016.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00016.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00017.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00017.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00018.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00018.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00019.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00019.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00020.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00020.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00021.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00021.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00022.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00022.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00023.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00023.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00024.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00024.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00025.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00025.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00026.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00026.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00027.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00027.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00028.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00028.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00029.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00029.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00030.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00030.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00031.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00031.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00032.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00032.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00033.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00033.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00034.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00034.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00035.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00035.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00036.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00036.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00037.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00037.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00038.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00038.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00039.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00039.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00040.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00040.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00041.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00041.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00042.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00042.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00043.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00043.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00044.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00044.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00045.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00045.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00046.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00046.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00047.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00047.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00048.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00048.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00049.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00049.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00050.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00050.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00051.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00051.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00052.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00052.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00053.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00053.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00054.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00054.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00055.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00055.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00056.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00056.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00057.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00057.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00058.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00058.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00059.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00059.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00060.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00060.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00061.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00061.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00062.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00062.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00063.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00063.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00064.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00064.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00065.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00065.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00066.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00066.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00067.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00067.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00068.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00068.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00069.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00069.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00070.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00070.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00071.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00071.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00072.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00072.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00073.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00073.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00074.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00074.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00075.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00075.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00076.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00076.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00077.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00077.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00078.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00078.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00079.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00079.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00080.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00080.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00081.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00081.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00082.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00082.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00083.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00083.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00084.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00084.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00085.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00085.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00086.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00086.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00087.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00087.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00088.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00088.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00089.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00089.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00090.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00090.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00091.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00091.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00092.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00092.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00093.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00093.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00094.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00094.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00095.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00095.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00096.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00096.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00097.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00097.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00098.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00098.png"
+        },
+        {
+          "ms": "samples/Industrial/MS/Industrial_00099.tif",
+          "rgb": "samples/Industrial/RGB/Industrial_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "Pasture",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 5004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 5004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 5004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 5004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 5004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 5004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 5004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 5004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 5004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 5004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 5004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 5004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 5004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/Pasture/MS/Pasture_00000.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00000.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00001.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00001.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00002.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00002.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00003.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00003.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00004.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00004.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00005.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00005.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00006.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00006.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00007.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00007.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00008.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00008.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00009.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00009.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00010.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00010.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00011.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00011.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00012.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00012.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00013.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00013.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00014.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00014.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00015.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00015.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00016.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00016.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00017.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00017.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00018.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00018.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00019.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00019.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00020.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00020.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00021.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00021.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00022.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00022.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00023.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00023.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00024.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00024.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00025.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00025.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00026.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00026.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00027.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00027.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00028.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00028.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00029.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00029.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00030.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00030.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00031.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00031.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00032.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00032.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00033.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00033.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00034.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00034.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00035.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00035.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00036.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00036.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00037.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00037.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00038.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00038.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00039.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00039.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00040.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00040.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00041.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00041.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00042.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00042.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00043.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00043.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00044.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00044.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00045.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00045.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00046.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00046.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00047.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00047.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00048.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00048.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00049.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00049.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00050.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00050.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00051.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00051.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00052.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00052.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00053.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00053.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00054.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00054.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00055.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00055.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00056.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00056.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00057.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00057.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00058.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00058.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00059.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00059.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00060.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00060.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00061.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00061.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00062.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00062.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00063.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00063.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00064.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00064.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00065.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00065.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00066.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00066.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00067.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00067.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00068.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00068.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00069.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00069.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00070.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00070.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00071.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00071.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00072.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00072.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00073.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00073.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00074.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00074.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00075.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00075.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00076.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00076.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00077.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00077.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00078.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00078.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00079.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00079.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00080.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00080.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00081.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00081.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00082.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00082.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00083.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00083.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00084.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00084.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00085.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00085.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00086.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00086.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00087.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00087.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00088.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00088.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00089.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00089.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00090.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00090.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00091.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00091.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00092.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00092.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00093.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00093.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00094.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00094.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00095.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00095.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00096.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00096.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00097.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00097.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00098.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00098.png"
+        },
+        {
+          "ms": "samples/Pasture/MS/Pasture_00099.tif",
+          "rgb": "samples/Pasture/RGB/Pasture_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "PermanentCrop",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 6004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 6004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 6004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 6004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 6004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 6004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 6004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 6004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 6004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 6004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 6004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 6004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 6004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00000.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00000.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00001.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00001.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00002.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00002.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00003.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00003.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00004.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00004.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00005.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00005.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00006.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00006.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00007.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00007.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00008.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00008.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00009.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00009.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00010.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00010.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00011.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00011.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00012.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00012.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00013.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00013.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00014.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00014.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00015.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00015.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00016.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00016.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00017.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00017.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00018.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00018.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00019.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00019.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00020.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00020.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00021.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00021.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00022.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00022.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00023.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00023.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00024.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00024.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00025.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00025.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00026.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00026.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00027.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00027.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00028.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00028.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00029.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00029.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00030.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00030.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00031.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00031.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00032.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00032.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00033.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00033.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00034.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00034.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00035.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00035.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00036.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00036.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00037.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00037.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00038.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00038.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00039.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00039.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00040.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00040.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00041.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00041.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00042.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00042.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00043.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00043.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00044.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00044.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00045.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00045.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00046.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00046.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00047.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00047.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00048.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00048.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00049.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00049.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00050.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00050.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00051.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00051.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00052.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00052.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00053.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00053.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00054.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00054.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00055.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00055.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00056.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00056.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00057.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00057.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00058.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00058.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00059.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00059.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00060.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00060.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00061.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00061.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00062.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00062.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00063.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00063.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00064.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00064.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00065.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00065.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00066.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00066.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00067.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00067.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00068.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00068.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00069.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00069.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00070.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00070.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00071.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00071.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00072.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00072.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00073.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00073.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00074.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00074.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00075.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00075.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00076.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00076.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00077.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00077.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00078.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00078.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00079.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00079.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00080.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00080.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00081.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00081.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00082.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00082.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00083.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00083.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00084.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00084.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00085.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00085.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00086.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00086.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00087.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00087.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00088.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00088.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00089.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00089.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00090.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00090.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00091.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00091.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00092.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00092.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00093.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00093.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00094.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00094.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00095.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00095.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00096.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00096.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00097.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00097.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00098.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00098.png"
+        },
+        {
+          "ms": "samples/PermanentCrop/MS/PermanentCrop_00099.tif",
+          "rgb": "samples/PermanentCrop/RGB/PermanentCrop_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "Residential",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 7004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 7004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 7004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 7004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 7004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 7004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 7004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 7004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 7004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 7004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 7004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 7004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 7004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/Residential/MS/Residential_00000.tif",
+          "rgb": "samples/Residential/RGB/Residential_00000.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00001.tif",
+          "rgb": "samples/Residential/RGB/Residential_00001.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00002.tif",
+          "rgb": "samples/Residential/RGB/Residential_00002.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00003.tif",
+          "rgb": "samples/Residential/RGB/Residential_00003.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00004.tif",
+          "rgb": "samples/Residential/RGB/Residential_00004.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00005.tif",
+          "rgb": "samples/Residential/RGB/Residential_00005.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00006.tif",
+          "rgb": "samples/Residential/RGB/Residential_00006.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00007.tif",
+          "rgb": "samples/Residential/RGB/Residential_00007.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00008.tif",
+          "rgb": "samples/Residential/RGB/Residential_00008.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00009.tif",
+          "rgb": "samples/Residential/RGB/Residential_00009.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00010.tif",
+          "rgb": "samples/Residential/RGB/Residential_00010.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00011.tif",
+          "rgb": "samples/Residential/RGB/Residential_00011.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00012.tif",
+          "rgb": "samples/Residential/RGB/Residential_00012.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00013.tif",
+          "rgb": "samples/Residential/RGB/Residential_00013.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00014.tif",
+          "rgb": "samples/Residential/RGB/Residential_00014.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00015.tif",
+          "rgb": "samples/Residential/RGB/Residential_00015.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00016.tif",
+          "rgb": "samples/Residential/RGB/Residential_00016.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00017.tif",
+          "rgb": "samples/Residential/RGB/Residential_00017.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00018.tif",
+          "rgb": "samples/Residential/RGB/Residential_00018.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00019.tif",
+          "rgb": "samples/Residential/RGB/Residential_00019.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00020.tif",
+          "rgb": "samples/Residential/RGB/Residential_00020.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00021.tif",
+          "rgb": "samples/Residential/RGB/Residential_00021.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00022.tif",
+          "rgb": "samples/Residential/RGB/Residential_00022.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00023.tif",
+          "rgb": "samples/Residential/RGB/Residential_00023.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00024.tif",
+          "rgb": "samples/Residential/RGB/Residential_00024.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00025.tif",
+          "rgb": "samples/Residential/RGB/Residential_00025.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00026.tif",
+          "rgb": "samples/Residential/RGB/Residential_00026.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00027.tif",
+          "rgb": "samples/Residential/RGB/Residential_00027.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00028.tif",
+          "rgb": "samples/Residential/RGB/Residential_00028.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00029.tif",
+          "rgb": "samples/Residential/RGB/Residential_00029.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00030.tif",
+          "rgb": "samples/Residential/RGB/Residential_00030.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00031.tif",
+          "rgb": "samples/Residential/RGB/Residential_00031.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00032.tif",
+          "rgb": "samples/Residential/RGB/Residential_00032.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00033.tif",
+          "rgb": "samples/Residential/RGB/Residential_00033.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00034.tif",
+          "rgb": "samples/Residential/RGB/Residential_00034.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00035.tif",
+          "rgb": "samples/Residential/RGB/Residential_00035.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00036.tif",
+          "rgb": "samples/Residential/RGB/Residential_00036.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00037.tif",
+          "rgb": "samples/Residential/RGB/Residential_00037.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00038.tif",
+          "rgb": "samples/Residential/RGB/Residential_00038.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00039.tif",
+          "rgb": "samples/Residential/RGB/Residential_00039.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00040.tif",
+          "rgb": "samples/Residential/RGB/Residential_00040.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00041.tif",
+          "rgb": "samples/Residential/RGB/Residential_00041.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00042.tif",
+          "rgb": "samples/Residential/RGB/Residential_00042.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00043.tif",
+          "rgb": "samples/Residential/RGB/Residential_00043.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00044.tif",
+          "rgb": "samples/Residential/RGB/Residential_00044.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00045.tif",
+          "rgb": "samples/Residential/RGB/Residential_00045.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00046.tif",
+          "rgb": "samples/Residential/RGB/Residential_00046.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00047.tif",
+          "rgb": "samples/Residential/RGB/Residential_00047.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00048.tif",
+          "rgb": "samples/Residential/RGB/Residential_00048.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00049.tif",
+          "rgb": "samples/Residential/RGB/Residential_00049.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00050.tif",
+          "rgb": "samples/Residential/RGB/Residential_00050.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00051.tif",
+          "rgb": "samples/Residential/RGB/Residential_00051.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00052.tif",
+          "rgb": "samples/Residential/RGB/Residential_00052.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00053.tif",
+          "rgb": "samples/Residential/RGB/Residential_00053.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00054.tif",
+          "rgb": "samples/Residential/RGB/Residential_00054.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00055.tif",
+          "rgb": "samples/Residential/RGB/Residential_00055.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00056.tif",
+          "rgb": "samples/Residential/RGB/Residential_00056.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00057.tif",
+          "rgb": "samples/Residential/RGB/Residential_00057.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00058.tif",
+          "rgb": "samples/Residential/RGB/Residential_00058.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00059.tif",
+          "rgb": "samples/Residential/RGB/Residential_00059.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00060.tif",
+          "rgb": "samples/Residential/RGB/Residential_00060.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00061.tif",
+          "rgb": "samples/Residential/RGB/Residential_00061.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00062.tif",
+          "rgb": "samples/Residential/RGB/Residential_00062.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00063.tif",
+          "rgb": "samples/Residential/RGB/Residential_00063.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00064.tif",
+          "rgb": "samples/Residential/RGB/Residential_00064.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00065.tif",
+          "rgb": "samples/Residential/RGB/Residential_00065.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00066.tif",
+          "rgb": "samples/Residential/RGB/Residential_00066.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00067.tif",
+          "rgb": "samples/Residential/RGB/Residential_00067.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00068.tif",
+          "rgb": "samples/Residential/RGB/Residential_00068.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00069.tif",
+          "rgb": "samples/Residential/RGB/Residential_00069.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00070.tif",
+          "rgb": "samples/Residential/RGB/Residential_00070.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00071.tif",
+          "rgb": "samples/Residential/RGB/Residential_00071.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00072.tif",
+          "rgb": "samples/Residential/RGB/Residential_00072.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00073.tif",
+          "rgb": "samples/Residential/RGB/Residential_00073.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00074.tif",
+          "rgb": "samples/Residential/RGB/Residential_00074.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00075.tif",
+          "rgb": "samples/Residential/RGB/Residential_00075.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00076.tif",
+          "rgb": "samples/Residential/RGB/Residential_00076.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00077.tif",
+          "rgb": "samples/Residential/RGB/Residential_00077.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00078.tif",
+          "rgb": "samples/Residential/RGB/Residential_00078.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00079.tif",
+          "rgb": "samples/Residential/RGB/Residential_00079.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00080.tif",
+          "rgb": "samples/Residential/RGB/Residential_00080.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00081.tif",
+          "rgb": "samples/Residential/RGB/Residential_00081.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00082.tif",
+          "rgb": "samples/Residential/RGB/Residential_00082.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00083.tif",
+          "rgb": "samples/Residential/RGB/Residential_00083.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00084.tif",
+          "rgb": "samples/Residential/RGB/Residential_00084.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00085.tif",
+          "rgb": "samples/Residential/RGB/Residential_00085.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00086.tif",
+          "rgb": "samples/Residential/RGB/Residential_00086.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00087.tif",
+          "rgb": "samples/Residential/RGB/Residential_00087.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00088.tif",
+          "rgb": "samples/Residential/RGB/Residential_00088.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00089.tif",
+          "rgb": "samples/Residential/RGB/Residential_00089.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00090.tif",
+          "rgb": "samples/Residential/RGB/Residential_00090.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00091.tif",
+          "rgb": "samples/Residential/RGB/Residential_00091.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00092.tif",
+          "rgb": "samples/Residential/RGB/Residential_00092.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00093.tif",
+          "rgb": "samples/Residential/RGB/Residential_00093.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00094.tif",
+          "rgb": "samples/Residential/RGB/Residential_00094.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00095.tif",
+          "rgb": "samples/Residential/RGB/Residential_00095.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00096.tif",
+          "rgb": "samples/Residential/RGB/Residential_00096.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00097.tif",
+          "rgb": "samples/Residential/RGB/Residential_00097.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00098.tif",
+          "rgb": "samples/Residential/RGB/Residential_00098.png"
+        },
+        {
+          "ms": "samples/Residential/MS/Residential_00099.tif",
+          "rgb": "samples/Residential/RGB/Residential_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "River",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 8004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 8004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 8004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 8004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 8004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 8004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 8004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 8004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 8004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 8004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 8004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 8004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 8004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/River/MS/River_00000.tif",
+          "rgb": "samples/River/RGB/River_00000.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00001.tif",
+          "rgb": "samples/River/RGB/River_00001.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00002.tif",
+          "rgb": "samples/River/RGB/River_00002.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00003.tif",
+          "rgb": "samples/River/RGB/River_00003.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00004.tif",
+          "rgb": "samples/River/RGB/River_00004.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00005.tif",
+          "rgb": "samples/River/RGB/River_00005.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00006.tif",
+          "rgb": "samples/River/RGB/River_00006.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00007.tif",
+          "rgb": "samples/River/RGB/River_00007.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00008.tif",
+          "rgb": "samples/River/RGB/River_00008.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00009.tif",
+          "rgb": "samples/River/RGB/River_00009.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00010.tif",
+          "rgb": "samples/River/RGB/River_00010.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00011.tif",
+          "rgb": "samples/River/RGB/River_00011.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00012.tif",
+          "rgb": "samples/River/RGB/River_00012.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00013.tif",
+          "rgb": "samples/River/RGB/River_00013.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00014.tif",
+          "rgb": "samples/River/RGB/River_00014.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00015.tif",
+          "rgb": "samples/River/RGB/River_00015.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00016.tif",
+          "rgb": "samples/River/RGB/River_00016.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00017.tif",
+          "rgb": "samples/River/RGB/River_00017.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00018.tif",
+          "rgb": "samples/River/RGB/River_00018.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00019.tif",
+          "rgb": "samples/River/RGB/River_00019.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00020.tif",
+          "rgb": "samples/River/RGB/River_00020.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00021.tif",
+          "rgb": "samples/River/RGB/River_00021.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00022.tif",
+          "rgb": "samples/River/RGB/River_00022.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00023.tif",
+          "rgb": "samples/River/RGB/River_00023.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00024.tif",
+          "rgb": "samples/River/RGB/River_00024.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00025.tif",
+          "rgb": "samples/River/RGB/River_00025.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00026.tif",
+          "rgb": "samples/River/RGB/River_00026.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00027.tif",
+          "rgb": "samples/River/RGB/River_00027.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00028.tif",
+          "rgb": "samples/River/RGB/River_00028.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00029.tif",
+          "rgb": "samples/River/RGB/River_00029.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00030.tif",
+          "rgb": "samples/River/RGB/River_00030.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00031.tif",
+          "rgb": "samples/River/RGB/River_00031.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00032.tif",
+          "rgb": "samples/River/RGB/River_00032.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00033.tif",
+          "rgb": "samples/River/RGB/River_00033.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00034.tif",
+          "rgb": "samples/River/RGB/River_00034.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00035.tif",
+          "rgb": "samples/River/RGB/River_00035.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00036.tif",
+          "rgb": "samples/River/RGB/River_00036.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00037.tif",
+          "rgb": "samples/River/RGB/River_00037.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00038.tif",
+          "rgb": "samples/River/RGB/River_00038.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00039.tif",
+          "rgb": "samples/River/RGB/River_00039.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00040.tif",
+          "rgb": "samples/River/RGB/River_00040.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00041.tif",
+          "rgb": "samples/River/RGB/River_00041.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00042.tif",
+          "rgb": "samples/River/RGB/River_00042.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00043.tif",
+          "rgb": "samples/River/RGB/River_00043.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00044.tif",
+          "rgb": "samples/River/RGB/River_00044.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00045.tif",
+          "rgb": "samples/River/RGB/River_00045.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00046.tif",
+          "rgb": "samples/River/RGB/River_00046.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00047.tif",
+          "rgb": "samples/River/RGB/River_00047.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00048.tif",
+          "rgb": "samples/River/RGB/River_00048.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00049.tif",
+          "rgb": "samples/River/RGB/River_00049.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00050.tif",
+          "rgb": "samples/River/RGB/River_00050.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00051.tif",
+          "rgb": "samples/River/RGB/River_00051.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00052.tif",
+          "rgb": "samples/River/RGB/River_00052.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00053.tif",
+          "rgb": "samples/River/RGB/River_00053.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00054.tif",
+          "rgb": "samples/River/RGB/River_00054.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00055.tif",
+          "rgb": "samples/River/RGB/River_00055.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00056.tif",
+          "rgb": "samples/River/RGB/River_00056.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00057.tif",
+          "rgb": "samples/River/RGB/River_00057.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00058.tif",
+          "rgb": "samples/River/RGB/River_00058.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00059.tif",
+          "rgb": "samples/River/RGB/River_00059.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00060.tif",
+          "rgb": "samples/River/RGB/River_00060.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00061.tif",
+          "rgb": "samples/River/RGB/River_00061.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00062.tif",
+          "rgb": "samples/River/RGB/River_00062.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00063.tif",
+          "rgb": "samples/River/RGB/River_00063.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00064.tif",
+          "rgb": "samples/River/RGB/River_00064.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00065.tif",
+          "rgb": "samples/River/RGB/River_00065.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00066.tif",
+          "rgb": "samples/River/RGB/River_00066.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00067.tif",
+          "rgb": "samples/River/RGB/River_00067.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00068.tif",
+          "rgb": "samples/River/RGB/River_00068.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00069.tif",
+          "rgb": "samples/River/RGB/River_00069.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00070.tif",
+          "rgb": "samples/River/RGB/River_00070.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00071.tif",
+          "rgb": "samples/River/RGB/River_00071.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00072.tif",
+          "rgb": "samples/River/RGB/River_00072.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00073.tif",
+          "rgb": "samples/River/RGB/River_00073.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00074.tif",
+          "rgb": "samples/River/RGB/River_00074.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00075.tif",
+          "rgb": "samples/River/RGB/River_00075.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00076.tif",
+          "rgb": "samples/River/RGB/River_00076.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00077.tif",
+          "rgb": "samples/River/RGB/River_00077.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00078.tif",
+          "rgb": "samples/River/RGB/River_00078.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00079.tif",
+          "rgb": "samples/River/RGB/River_00079.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00080.tif",
+          "rgb": "samples/River/RGB/River_00080.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00081.tif",
+          "rgb": "samples/River/RGB/River_00081.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00082.tif",
+          "rgb": "samples/River/RGB/River_00082.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00083.tif",
+          "rgb": "samples/River/RGB/River_00083.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00084.tif",
+          "rgb": "samples/River/RGB/River_00084.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00085.tif",
+          "rgb": "samples/River/RGB/River_00085.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00086.tif",
+          "rgb": "samples/River/RGB/River_00086.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00087.tif",
+          "rgb": "samples/River/RGB/River_00087.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00088.tif",
+          "rgb": "samples/River/RGB/River_00088.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00089.tif",
+          "rgb": "samples/River/RGB/River_00089.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00090.tif",
+          "rgb": "samples/River/RGB/River_00090.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00091.tif",
+          "rgb": "samples/River/RGB/River_00091.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00092.tif",
+          "rgb": "samples/River/RGB/River_00092.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00093.tif",
+          "rgb": "samples/River/RGB/River_00093.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00094.tif",
+          "rgb": "samples/River/RGB/River_00094.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00095.tif",
+          "rgb": "samples/River/RGB/River_00095.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00096.tif",
+          "rgb": "samples/River/RGB/River_00096.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00097.tif",
+          "rgb": "samples/River/RGB/River_00097.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00098.tif",
+          "rgb": "samples/River/RGB/River_00098.png"
+        },
+        {
+          "ms": "samples/River/MS/River_00099.tif",
+          "rgb": "samples/River/RGB/River_00099.png"
+        }
+      ]
+    },
+    {
+      "class_name": "SeaLake",
+      "count": 100,
+      "batches": [
+        {
+          "start": 0,
+          "count": 8,
+          "seed": 9004242
+        },
+        {
+          "start": 8,
+          "count": 8,
+          "seed": 9004250
+        },
+        {
+          "start": 16,
+          "count": 8,
+          "seed": 9004258
+        },
+        {
+          "start": 24,
+          "count": 8,
+          "seed": 9004266
+        },
+        {
+          "start": 32,
+          "count": 8,
+          "seed": 9004274
+        },
+        {
+          "start": 40,
+          "count": 8,
+          "seed": 9004282
+        },
+        {
+          "start": 48,
+          "count": 8,
+          "seed": 9004290
+        },
+        {
+          "start": 56,
+          "count": 8,
+          "seed": 9004298
+        },
+        {
+          "start": 64,
+          "count": 8,
+          "seed": 9004306
+        },
+        {
+          "start": 72,
+          "count": 8,
+          "seed": 9004314
+        },
+        {
+          "start": 80,
+          "count": 8,
+          "seed": 9004322
+        },
+        {
+          "start": 88,
+          "count": 8,
+          "seed": 9004330
+        },
+        {
+          "start": 96,
+          "count": 4,
+          "seed": 9004338
+        }
+      ],
+      "files": [
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00000.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00000.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00001.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00001.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00002.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00002.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00003.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00003.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00004.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00004.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00005.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00005.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00006.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00006.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00007.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00007.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00008.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00008.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00009.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00009.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00010.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00010.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00011.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00011.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00012.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00012.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00013.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00013.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00014.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00014.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00015.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00015.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00016.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00016.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00017.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00017.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00018.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00018.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00019.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00019.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00020.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00020.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00021.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00021.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00022.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00022.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00023.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00023.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00024.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00024.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00025.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00025.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00026.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00026.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00027.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00027.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00028.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00028.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00029.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00029.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00030.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00030.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00031.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00031.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00032.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00032.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00033.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00033.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00034.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00034.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00035.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00035.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00036.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00036.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00037.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00037.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00038.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00038.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00039.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00039.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00040.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00040.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00041.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00041.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00042.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00042.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00043.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00043.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00044.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00044.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00045.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00045.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00046.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00046.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00047.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00047.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00048.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00048.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00049.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00049.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00050.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00050.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00051.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00051.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00052.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00052.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00053.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00053.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00054.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00054.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00055.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00055.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00056.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00056.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00057.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00057.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00058.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00058.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00059.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00059.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00060.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00060.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00061.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00061.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00062.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00062.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00063.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00063.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00064.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00064.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00065.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00065.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00066.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00066.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00067.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00067.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00068.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00068.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00069.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00069.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00070.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00070.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00071.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00071.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00072.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00072.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00073.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00073.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00074.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00074.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00075.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00075.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00076.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00076.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00077.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00077.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00078.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00078.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00079.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00079.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00080.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00080.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00081.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00081.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00082.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00082.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00083.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00083.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00084.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00084.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00085.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00085.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00086.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00086.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00087.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00087.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00088.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00088.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00089.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00089.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00090.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00090.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00091.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00091.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00092.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00092.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00093.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00093.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00094.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00094.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00095.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00095.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00096.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00096.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00097.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00097.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00098.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00098.png"
+        },
+        {
+          "ms": "samples/SeaLake/MS/SeaLake_00099.tif",
+          "rgb": "samples/SeaLake/RGB/SeaLake_00099.png"
+        }
+      ]
+    }
+  ],
+  "total_samples": 1000,
+  "elapsed_seconds": 566.1815818140021,
+  "peak_vram_mib": 5164.80224609375
+}

@@ -1,0 +1,309 @@
+{
+  "checkpoint": "/home/valerio/universit\u00e0/master-thesis/experiments/latent_unmixing_per_class_large/ddpm_checkpoints/latent_unmixing_per_class_large_ddpm-run_1-best.pt",
+  "checkpoint_sha256": "7633a1ae425268dd9e863f7d518e837d5e83d8baf2e9821e24ec6d88d78c65e2",
+  "checkpoint_epoch": 100,
+  "checkpoint_validation_mse": 0.04578141513866959,
+  "weights": "ema",
+  "source_encoder_checkpoint": "/home/valerio/universit\u00e0/master-thesis/experiments/latent_unmixing_per_class_large/encoder_checkpoints/latent_unmixing_per_class_large_encoder-run_1-best.pt",
+  "images_per_class": 100,
+  "batch_size": 8,
+  "inference_steps": 50,
+  "guidance_scale": 3.0,
+  "seed": 42,
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "precision": "float32",
+  "test_reference": "Prime 100 immagini per classe degli indici test salvati nel checkpoint, come nello script evaluation",
+  "config": {
+    "_comment": [
+      "data: EuroSAT MS, split stratificato e normalizzazione per banda",
+      "model: encoder piu ampi e un banco di basi spettrali per ciascuna classe",
+      "encoder_training: MSE di ricostruzione, batch bilanciati; resume=false avvia una nuova run",
+      "monitor: RMC reali/ricostruite e basi salvate a ogni epoca",
+      "simplex: ILR con statistiche distinte per classe stimate sul training set",
+      "ddpm_model: U-Net condizionale piu ampia nello spazio ILR",
+      "ddpm_training: MSE sul rumore, EMA; resume=false avvia una nuova run",
+      "evaluation: sampling per classe e confronto RMC sul test set",
+      "paths: checkpoint e log indipendenti; immagini e risultati solo sotto outputs/"
+    ],
+    "experiment": {
+      "name": "latent_unmixing_per_class_large",
+      "seed": 42
+    },
+    "data": {
+      "root": "/home/valerio/universit\u00e0/master-thesis/data/EuroSAT_MS",
+      "image_size": 64,
+      "channels": 13,
+      "num_classes": 10,
+      "split": {
+        "train": 0.9,
+        "validation": 0.05,
+        "test": 0.05
+      },
+      "normalization_max": 10000,
+      "rgb_display_max": 0.3,
+      "statistics_batch_size": 64,
+      "band_names": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "B8",
+        "B9",
+        "B10",
+        "B11",
+        "B12",
+        "B8A"
+      ],
+      "wavelengths_nm": [
+        443,
+        490,
+        560,
+        665,
+        705,
+        740,
+        783,
+        842,
+        945,
+        1375,
+        1610,
+        2190,
+        865
+      ]
+    },
+    "model": {
+      "num_bases": 12,
+      "hidden_channels": 128,
+      "num_res_blocks": 4,
+      "norm_num_groups": 8,
+      "abundance_temperature": 1.0
+    },
+    "encoder_training": {
+      "epochs": 30,
+      "batch_size": 20,
+      "validation_batch_size": 40,
+      "encoder_learning_rate": 0.001,
+      "basis_learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "max_grad_norm": 1.0,
+      "num_workers": 4,
+      "mixed_precision": "fp16",
+      "pin_memory": true,
+      "resume": true
+    },
+    "monitor": {
+      "batch_size": 40,
+      "axis_margin": 0.1
+    },
+    "simplex": {
+      "epsilon": 1e-06,
+      "statistics_epsilon": 0.0001
+    },
+    "ddpm_model": {
+      "base_channels": 256,
+      "channel_multipliers": [
+        1,
+        2,
+        2
+      ],
+      "num_res_blocks": 2,
+      "dropout": 0.0,
+      "attention_head_dim": 8,
+      "norm_num_groups": 32,
+      "resnet_time_scale_shift": "scale_shift"
+    },
+    "diffusion": {
+      "timesteps": 1000,
+      "beta_schedule": "squaredcos_cap_v2",
+      "prediction_type": "epsilon",
+      "clip_sample": false
+    },
+    "cfg": {
+      "condition_dropout": 0.1,
+      "guidance_scale": 3.0
+    },
+    "ddpm_training": {
+      "epochs": 100,
+      "batch_size": 10,
+      "validation_batch_size": 20,
+      "gradient_accumulation_steps": 3,
+      "learning_rate": 0.0001,
+      "warmup_steps": 500,
+      "max_grad_norm": 1.0,
+      "ema_decay": 0.9999,
+      "num_workers": 1,
+      "mixed_precision": "fp16",
+      "gradient_checkpointing": true,
+      "pin_memory": true,
+      "preview_inference_steps": 50,
+      "resume": true
+    },
+    "evaluation": {
+      "images_per_class": 100,
+      "batch_size": 8,
+      "inference_steps": 50
+    },
+    "paths": {
+      "encoder_checkpoints": "/home/valerio/universit\u00e0/master-thesis/experiments/latent_unmixing_per_class_large/encoder_checkpoints",
+      "encoder_logs": "/home/valerio/universit\u00e0/master-thesis/experiments/latent_unmixing_per_class_large/log/encoder",
+      "encoder_previews": "/home/valerio/universit\u00e0/master-thesis/outputs/previews/latent_unmixing_per_class_large_encoder",
+      "ddpm_checkpoints": "/home/valerio/universit\u00e0/master-thesis/experiments/latent_unmixing_per_class_large/ddpm_checkpoints",
+      "ddpm_logs": "/home/valerio/universit\u00e0/master-thesis/experiments/latent_unmixing_per_class_large/log/ddpm",
+      "ddpm_previews": "/home/valerio/universit\u00e0/master-thesis/outputs/previews/latent_unmixing_per_class_large_ddpm",
+      "results": "/home/valerio/universit\u00e0/master-thesis/outputs/results/latent_unmixing_per_class_large"
+    }
+  },
+  "status": "complete",
+  "elapsed_seconds": 560.4343459419979,
+  "peak_vram_mb": 1866.25732421875,
+  "counts": {
+    "AnnualCrop": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "Forest": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "HerbaceousVegetation": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "Highway": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "Industrial": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "Pasture": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "PermanentCrop": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "Residential": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "River": {
+      "MS": 100,
+      "RGB": 100
+    },
+    "SeaLake": {
+      "MS": 100,
+      "RGB": 100
+    }
+  },
+  "metrics_per_class": {
+    "AnnualCrop": {
+      "rmc_rmse": 0.008046150355987502,
+      "rmc_mae": 0.006124191301056019
+    },
+    "Forest": {
+      "rmc_rmse": 0.003221105157362413,
+      "rmc_mae": 0.0021506060901336347
+    },
+    "HerbaceousVegetation": {
+      "rmc_rmse": 0.0035655294862268106,
+      "rmc_mae": 0.0026912538065995066
+    },
+    "Highway": {
+      "rmc_rmse": 0.004550212816639182,
+      "rmc_mae": 0.0034780615825893337
+    },
+    "Industrial": {
+      "rmc_rmse": 0.003437604980482325,
+      "rmc_mae": 0.002601184459041696
+    },
+    "Pasture": {
+      "rmc_rmse": 0.00668545332913541,
+      "rmc_mae": 0.005608706921277972
+    },
+    "PermanentCrop": {
+      "rmc_rmse": 0.004193140588949457,
+      "rmc_mae": 0.0027931752267362333
+    },
+    "Residential": {
+      "rmc_rmse": 0.008075473711266063,
+      "rmc_mae": 0.006806800955186551
+    },
+    "River": {
+      "rmc_rmse": 0.005708662665931371,
+      "rmc_mae": 0.004579825724191318
+    },
+    "SeaLake": {
+      "rmc_rmse": 0.0019310197764746127,
+      "rmc_mae": 0.001438211882083044
+    }
+  },
+  "macro": {
+    "rmc_mae": 0.0038272017948895306,
+    "rmc_rmse": 0.0049414352868455145
+  },
+  "verified_tiff_count": 1000,
+  "verified_rgb_count": 1000,
+  "verified_tiff_shape": [
+    64,
+    64,
+    13
+  ],
+  "verified_tiff_dtype": "float32",
+  "rgb_gallery_examples": {
+    "AnnualCrop": [
+      "samples/AnnualCrop/RGB/AnnualCrop_0066_eval.png",
+      "samples/AnnualCrop/RGB/AnnualCrop_0009_eval.png",
+      "samples/AnnualCrop/RGB/AnnualCrop_0077_eval.png"
+    ],
+    "Forest": [
+      "samples/Forest/RGB/Forest_0009_eval.png",
+      "samples/Forest/RGB/Forest_0070_eval.png",
+      "samples/Forest/RGB/Forest_0085_eval.png"
+    ],
+    "HerbaceousVegetation": [
+      "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_0052_eval.png",
+      "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_0097_eval.png",
+      "samples/HerbaceousVegetation/RGB/HerbaceousVegetation_0074_eval.png"
+    ],
+    "Highway": [
+      "samples/Highway/RGB/Highway_0051_eval.png",
+      "samples/Highway/RGB/Highway_0078_eval.png",
+      "samples/Highway/RGB/Highway_0013_eval.png"
+    ],
+    "Industrial": [
+      "samples/Industrial/RGB/Industrial_0050_eval.png",
+      "samples/Industrial/RGB/Industrial_0037_eval.png",
+      "samples/Industrial/RGB/Industrial_0019_eval.png"
+    ],
+    "Pasture": [
+      "samples/Pasture/RGB/Pasture_0083_eval.png",
+      "samples/Pasture/RGB/Pasture_0064_eval.png",
+      "samples/Pasture/RGB/Pasture_0040_eval.png"
+    ],
+    "PermanentCrop": [
+      "samples/PermanentCrop/RGB/PermanentCrop_0045_eval.png",
+      "samples/PermanentCrop/RGB/PermanentCrop_0010_eval.png",
+      "samples/PermanentCrop/RGB/PermanentCrop_0023_eval.png"
+    ],
+    "Residential": [
+      "samples/Residential/RGB/Residential_0083_eval.png",
+      "samples/Residential/RGB/Residential_0085_eval.png",
+      "samples/Residential/RGB/Residential_0007_eval.png"
+    ],
+    "River": [
+      "samples/River/RGB/River_0071_eval.png",
+      "samples/River/RGB/River_0017_eval.png",
+      "samples/River/RGB/River_0076_eval.png"
+    ],
+    "SeaLake": [
+      "samples/SeaLake/RGB/SeaLake_0096_eval.png",
+      "samples/SeaLake/RGB/SeaLake_0045_eval.png",
+      "samples/SeaLake/RGB/SeaLake_0090_eval.png"
+    ]
+  }
+}

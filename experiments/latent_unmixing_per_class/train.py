@@ -10,7 +10,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 
-from experiments.latent_unmixing_per_class import train_ddpm, train_encoder  # noqa: E402
+from experiments.latent_unmixing_per_class import train_ddpm, train_encoder  
 
 
 def main():

@@ -1,0 +1,138 @@
+{
+  "_comment": [
+    "model: un encoder e un banco di K basi per classe; softmax dai logits alle abundance",
+    "encoder_training: ricostruzione con batch bilanciati; resume della run indipendente",
+    "latent: K logits standardizzati per classe, senza trasformazioni ILR",
+    "ddpm_model: unica U-Net condizionale con K canali di ingresso e uscita",
+    "diffusion e cfg: rumore gaussiano sui logits e guidance; softmax solo prima del decoder",
+    "evaluation: sampling per classe e confronto RMC sul test; output in paths.results",
+    "paths: checkpoint, log e output separati dagli altri esperimenti"
+  ],
+  "experiment": {
+    "name": "latent_unmixing_per_class_softmax",
+    "seed": 42
+  },
+  "data": {
+    "root": "data/EuroSAT_MS",
+    "image_size": 64,
+    "channels": 13,
+    "num_classes": 10,
+    "split": {
+      "train": 0.9,
+      "validation": 0.05,
+      "test": 0.05
+    },
+    "normalization_max": 10000,
+    "rgb_display_max": 0.3,
+    "statistics_batch_size": 64,
+    "band_names": [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "B6",
+      "B7",
+      "B8",
+      "B9",
+      "B10",
+      "B11",
+      "B12",
+      "B8A"
+    ],
+    "wavelengths_nm": [
+      443,
+      490,
+      560,
+      665,
+      705,
+      740,
+      783,
+      842,
+      945,
+      1375,
+      1610,
+      2190,
+      865
+    ]
+  },
+  "model": {
+    "num_bases": 6,
+    "hidden_channels": 64,
+    "num_res_blocks": 4,
+    "norm_num_groups": 8,
+    "abundance_temperature": 1.0
+  },
+  "encoder_training": {
+    "epochs": 30,
+    "batch_size": 20,
+    "validation_batch_size": 40,
+    "encoder_learning_rate": 0.001,
+    "basis_learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "max_grad_norm": 1.0,
+    "num_workers": 4,
+    "mixed_precision": "fp16",
+    "pin_memory": true,
+    "resume": true
+  },
+  "monitor": {
+    "axis_margin": 0.1
+  },
+  "latent": {
+    "statistics_epsilon": 0.0001
+  },
+  "ddpm_model": {
+    "base_channels": 128,
+    "channel_multipliers": [
+      1,
+      2,
+      2
+    ],
+    "num_res_blocks": 2,
+    "dropout": 0.0,
+    "attention_head_dim": 8,
+    "norm_num_groups": 32,
+    "resnet_time_scale_shift": "scale_shift"
+  },
+  "diffusion": {
+    "timesteps": 1000,
+    "beta_schedule": "squaredcos_cap_v2",
+    "prediction_type": "epsilon",
+    "clip_sample": false
+  },
+  "cfg": {
+    "condition_dropout": 0.1,
+    "guidance_scale": 3.0
+  },
+  "ddpm_training": {
+    "epochs": 100,
+    "batch_size": 10,
+    "validation_batch_size": 20,
+    "gradient_accumulation_steps": 3,
+    "learning_rate": 0.0001,
+    "warmup_steps": 500,
+    "max_grad_norm": 1.0,
+    "ema_decay": 0.9999,
+    "num_workers": 1,
+    "mixed_precision": "fp16",
+    "gradient_checkpointing": true,
+    "pin_memory": true,
+    "preview_inference_steps": 50,
+    "resume": true
+  },
+  "evaluation": {
+    "images_per_class": 100,
+    "batch_size": 8,
+    "inference_steps": 50
+  },
+  "paths": {
+    "encoder_checkpoints": "experiments/latent_unmixing_per_class_softmax/encoder_checkpoints",
+    "encoder_logs": "experiments/latent_unmixing_per_class_softmax/log/encoder",
+    "encoder_previews": "outputs/previews/latent_unmixing_per_class_softmax_encoder",
+    "ddpm_checkpoints": "experiments/latent_unmixing_per_class_softmax/ddpm_checkpoints",
+    "ddpm_logs": "experiments/latent_unmixing_per_class_softmax/log/ddpm",
+    "ddpm_previews": "outputs/previews/latent_unmixing_per_class_softmax_ddpm",
+    "results": "outputs/results/latent_unmixing_per_class_softmax"
+  }
+}

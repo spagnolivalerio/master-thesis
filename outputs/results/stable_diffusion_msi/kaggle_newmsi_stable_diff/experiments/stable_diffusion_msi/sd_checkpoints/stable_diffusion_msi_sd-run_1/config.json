@@ -1,0 +1,130 @@
+{
+  "experiment": {
+    "name": "stable_diffusion_msi",
+    "seed": 42
+  },
+  "data": {
+    "root": null,
+    "image_size": 64,
+    "channels": 13,
+    "num_classes": 10,
+    "normalization_max": 10000.0,
+    "rgb_display_max": 0.3,
+    "band_names": [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5",
+      "B6",
+      "B7",
+      "B8",
+      "B9",
+      "B10",
+      "B11",
+      "B12",
+      "B8A"
+    ],
+    "wavelengths_nm": [
+      443,
+      490,
+      560,
+      665,
+      705,
+      740,
+      783,
+      842,
+      945,
+      1375,
+      1610,
+      2190,
+      865
+    ],
+    "split": {
+      "train": 0.9,
+      "validation": 0.05,
+      "test": 0.05
+    },
+    "split_manifest": null
+  },
+  "training": {
+    "batch_size": 10,
+    "validation_batch_size": 20,
+    "num_workers": 2,
+    "pin_memory": true
+  },
+  "vae_model": {
+    "model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+    "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+    "initialization": "pretrained_body_random_io"
+  },
+  "vae_training": {
+    "epochs": 10,
+    "learning_rate": 0.0001,
+    "kl_weight": 0.0001,
+    "max_grad_norm": 1.0,
+    "mixed_precision": "no",
+    "gradient_checkpointing": true,
+    "resume": true,
+    "resume_checkpoint": null
+  },
+  "sd_model": {
+    "lora_rank": 16,
+    "target_modules": [
+      "to_q",
+      "to_k",
+      "to_v",
+      "to_out.0",
+      "conv_in",
+      "conv_out"
+    ],
+    "prompts": {
+      "AnnualCrop": "satellite image of annual crop fields",
+      "Forest": "satellite image of a forest",
+      "HerbaceousVegetation": "satellite image of herbaceous vegetation",
+      "Highway": "satellite image of a highway",
+      "Industrial": "satellite image of an industrial area",
+      "Pasture": "satellite image of pastures",
+      "PermanentCrop": "satellite image of permanent crop fields",
+      "Residential": "satellite image of a residential area",
+      "River": "satellite image of a river",
+      "SeaLake": "satellite image of a sea or lake"
+    }
+  },
+  "cfg": {
+    "condition_dropout": 0.1,
+    "guidance_scale": 3.0
+  },
+  "sd_training": {
+    "epochs": 10,
+    "learning_rate": 0.0001,
+    "max_grad_norm": 1.0,
+    "mixed_precision": "fp16",
+    "gradient_checkpointing": true,
+    "ema_decay": 0.9999,
+    "validation_seed": 123,
+    "preview_seed": 42,
+    "preview_inference_steps": 50,
+    "resume": true,
+    "resume_checkpoint": null,
+    "vae_checkpoint": null
+  },
+  "sampling": {
+    "num_samples": 100,
+    "batch_size": 8,
+    "inference_steps": 50,
+    "seed": 4242
+  },
+  "evaluation": {
+    "batch_size": 20
+  },
+  "paths": {
+    "results": "/kaggle/working/outputs/results/stable_diffusion_msi",
+    "vae_checkpoints": "/kaggle/working/experiments/stable_diffusion_msi/vae_checkpoints",
+    "vae_logs": "/kaggle/working/experiments/stable_diffusion_msi/log/vae",
+    "vae_previews": "/kaggle/working/outputs/previews/stable_diffusion_msi_vae",
+    "sd_checkpoints": "/kaggle/working/experiments/stable_diffusion_msi/sd_checkpoints",
+    "sd_logs": "/kaggle/working/experiments/stable_diffusion_msi/log/sd",
+    "sd_previews": "/kaggle/working/outputs/previews/stable_diffusion_msi_sd"
+  }
+}

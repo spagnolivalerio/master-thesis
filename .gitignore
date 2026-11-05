@@ -41,6 +41,7 @@ weights/
 *.pickle
 *.joblib
 *.npz
+*.jsonl
 
 # Per-run artifacts are intentionally local. Each run contains its own frozen
 # config and metadata, but those files must not be picked up by the global JSON

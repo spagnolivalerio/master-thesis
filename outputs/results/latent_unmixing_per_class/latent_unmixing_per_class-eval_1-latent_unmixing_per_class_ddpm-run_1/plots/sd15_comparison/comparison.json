@@ -1,0 +1,647 @@
+{
+  "checkpoint": "experiments/latent_unmixing_per_class/ddpm_checkpoints/latent_unmixing_per_class_ddpm-run_1-best.pt",
+  "best_epoch": 100,
+  "best_validation_mse": 0.047341109239668756,
+  "weights": "ema",
+  "source_encoder_checkpoint": "/home/valerio/università/multispectral-diffusion/newrepo/experiments/latent_unmixing_per_class/encoder_checkpoints/latent_unmixing_per_class_encoder-run_2-best.pt",
+  "sd_config": {
+    "seed": 42,
+    "model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+    "samples_per_class": 100,
+    "batch_size": 2,
+    "inference_steps": 50,
+    "guidance_scale": 5.0,
+    "lora_rank": 16,
+    "dn_scale": 10000.0,
+    "rgb_white_point": 0.3,
+    "vae_run": "/kaggle/input/notebooks/spagnolivalerio/vae-for-msi/eurosat_vae",
+    "lora_file": "/kaggle/input/notebooks/spagnolivalerio/stable-diffusion-msi/eurosat_sd15/unet_lora_best.safetensors",
+    "data_root": "/kaggle/input/datasets/spagnolivalerio/eurosat-ms/EuroSAT_MS",
+    "plot_band_order": [
+      "B01",
+      "B02",
+      "B03",
+      "B04",
+      "B05",
+      "B06",
+      "B07",
+      "B08",
+      "B8A",
+      "B09",
+      "B10",
+      "B11",
+      "B12"
+    ],
+    "tiff_band_order": [
+      "B01",
+      "B02",
+      "B03",
+      "B04",
+      "B05",
+      "B06",
+      "B07",
+      "B08",
+      "B09",
+      "B10",
+      "B11",
+      "B12",
+      "B8A"
+    ]
+  },
+  "unmixing_cfg": {
+    "condition_dropout": 0.1,
+    "guidance_scale": 3.0
+  },
+  "reference": "Intero test set del checkpoint latent unmixing, stessi TIFF e bande per entrambi i modelli",
+  "test_samples_total": 1350,
+  "generated_per_class_each_model": 100,
+  "macro": {
+    "sd15_rmc_mae": 0.011425299374881645,
+    "sd15_rmc_rmse": 0.014458620724539437,
+    "sd15_rmc_sam_degrees": 3.055198183628401,
+    "sd15_mean_spectrum_w1": 0.016722769919104333,
+    "sd15_between_image_std_ratio": 0.5931678046991045,
+    "sd15_within_image_std_ratio": 1.1339570064729023,
+    "sd15_rgb_gradient_ratio": 0.6770743972185402,
+    "sd15_negative_fraction": 0.007152625450721153,
+    "sd15_above_one_fraction": 7.230318509615385e-06,
+    "sd15_min": -0.09912109375,
+    "sd15_max": 1.6689453125,
+    "sd15_rmc_mae_clamp_min_zero": 0.011386517473283089,
+    "unmixing_rmc_mae": 0.003640086337683565,
+    "unmixing_rmc_rmse": 0.004668759689823302,
+    "unmixing_rmc_sam_degrees": 0.8590110698865446,
+    "unmixing_mean_spectrum_w1": 0.008546292951738666,
+    "unmixing_between_image_std_ratio": 1.1124210545673368,
+    "unmixing_within_image_std_ratio": 1.0870193239219135,
+    "unmixing_rgb_gradient_ratio": 0.7378960807979064,
+    "unmixing_negative_fraction": 0.0,
+    "unmixing_above_one_fraction": 0.0,
+    "unmixing_min": 0.0,
+    "unmixing_max": 0.8037623763084412,
+    "unmixing_rmc_mae_clamp_min_zero": 0.003640086337683565,
+    "rmc_mae_reduction_unmixing_vs_sd15_percent": 68.14012291278561,
+    "sd15_minus_unmixing_rmc_mae_bootstrap_ci_95": [
+      0.004793365632012524,
+      0.008388470894868995
+    ],
+    "class_wins_rmc_mae": {
+      "sd15": 1,
+      "unmixing": 9
+    },
+    "real_fraction_outside_0_1": 4.1246550035612534e-05
+  },
+  "per_class": [
+    {
+      "class_name": "AnnualCrop",
+      "n_real_test": 150,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.017454451181084376,
+      "sd15_rmc_rmse": 0.02099113501811904,
+      "sd15_rmc_sam_degrees": 1.659760969045904,
+      "sd15_mean_spectrum_w1": 0.020741672689968273,
+      "sd15_between_image_std_ratio": 0.5852358460441657,
+      "sd15_within_image_std_ratio": 1.4209722683220842,
+      "sd15_rgb_gradient_ratio": 0.7107239416119273,
+      "sd15_negative_fraction": 0.005025540865384616,
+      "sd15_above_one_fraction": 0.0,
+      "sd15_min": -0.01220703125,
+      "sd15_max": 0.7069091796875,
+      "sd15_rmc_mae_clamp_min_zero": 0.017450445382157655,
+      "unmixing_rmc_mae": 0.0010690147843362386,
+      "unmixing_rmc_rmse": 0.0014703810247032089,
+      "unmixing_rmc_sam_degrees": 0.3841534903404326,
+      "unmixing_mean_spectrum_w1": 0.007815010289436685,
+      "unmixing_between_image_std_ratio": 1.143891411402633,
+      "unmixing_within_image_std_ratio": 1.0341383243777205,
+      "unmixing_rgb_gradient_ratio": 0.7084433069719788,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.8037623763084412,
+      "unmixing_rmc_mae_clamp_min_zero": 0.0010690147843362386,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": 0.004491355440476539,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.01789076969515645
+    },
+    {
+      "class_name": "Forest",
+      "n_real_test": 150,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.010850631950757115,
+      "sd15_rmc_rmse": 0.012289984963979263,
+      "sd15_rmc_sam_degrees": 2.911787439592865,
+      "sd15_mean_spectrum_w1": 0.01758102104552899,
+      "sd15_between_image_std_ratio": 0.35792021724537576,
+      "sd15_within_image_std_ratio": 0.8941579060176109,
+      "sd15_rgb_gradient_ratio": 0.34500997037182257,
+      "sd15_negative_fraction": 0.00029822716346153844,
+      "sd15_above_one_fraction": 0.0,
+      "sd15_min": -0.00830078125,
+      "sd15_max": 0.540557861328125,
+      "sd15_rmc_mae_clamp_min_zero": 0.010850378401768187,
+      "unmixing_rmc_mae": 0.0018915841827262306,
+      "unmixing_rmc_rmse": 0.0026244767872941836,
+      "unmixing_rmc_sam_degrees": 0.8515466235196322,
+      "unmixing_mean_spectrum_w1": 0.004657688556813766,
+      "unmixing_between_image_std_ratio": 0.9041984520947635,
+      "unmixing_within_image_std_ratio": 1.0344110717115083,
+      "unmixing_rgb_gradient_ratio": 0.3370370217237337,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 6.758968811482191e-05,
+      "unmixing_max": 0.6103842258453369,
+      "unmixing_rmc_mae_clamp_min_zero": 0.0018915841827262306,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": 0.003024711976010139,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.011444159646109885
+    },
+    {
+      "class_name": "HerbaceousVegetation",
+      "n_real_test": 150,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.011946143819334851,
+      "sd15_rmc_rmse": 0.01428594871910643,
+      "sd15_rmc_sam_degrees": 4.732554239228222,
+      "sd15_mean_spectrum_w1": 0.014634505633710236,
+      "sd15_between_image_std_ratio": 0.659605600037313,
+      "sd15_within_image_std_ratio": 0.7882029794527012,
+      "sd15_rgb_gradient_ratio": 0.3991125450036159,
+      "sd15_negative_fraction": 0.0001359675480769231,
+      "sd15_above_one_fraction": 0.0,
+      "sd15_min": -0.01171875,
+      "sd15_max": 0.468780517578125,
+      "sd15_rmc_mae_clamp_min_zero": 0.011946320707580654,
+      "unmixing_rmc_mae": 0.004152442657310197,
+      "unmixing_rmc_rmse": 0.006197473058536196,
+      "unmixing_rmc_sam_degrees": 1.4504736006516719,
+      "unmixing_mean_spectrum_w1": 0.008262033971113518,
+      "unmixing_between_image_std_ratio": 1.1547100645178918,
+      "unmixing_within_image_std_ratio": 1.0935453803187627,
+      "unmixing_rgb_gradient_ratio": 0.7082194668403318,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.5477395057678223,
+      "unmixing_rmc_mae_clamp_min_zero": 0.004152442657310197,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": 0.0006006728459572934,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.010351454733487484
+    },
+    {
+      "class_name": "Highway",
+      "n_real_test": 125,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.0037830059690611598,
+      "sd15_rmc_rmse": 0.004543551991696569,
+      "sd15_rmc_sam_degrees": 0.8295368556110629,
+      "sd15_mean_spectrum_w1": 0.014710539503834153,
+      "sd15_between_image_std_ratio": 0.5135617913712982,
+      "sd15_within_image_std_ratio": 1.2389670298783597,
+      "sd15_rgb_gradient_ratio": 0.8370727342256199,
+      "sd15_negative_fraction": 0.0010238882211538462,
+      "sd15_above_one_fraction": 0.0,
+      "sd15_min": -0.013671875,
+      "sd15_max": 0.76220703125,
+      "sd15_rmc_mae_clamp_min_zero": 0.0037822380778375453,
+      "unmixing_rmc_mae": 0.004645499532885921,
+      "unmixing_rmc_rmse": 0.005455326065522713,
+      "unmixing_rmc_sam_degrees": 0.44001573849093495,
+      "unmixing_mean_spectrum_w1": 0.009430486384327677,
+      "unmixing_between_image_std_ratio": 1.122411094659172,
+      "unmixing_within_image_std_ratio": 1.1399547990481431,
+      "unmixing_rgb_gradient_ratio": 1.0668871070852053,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.7169266939163208,
+      "unmixing_rmc_mae_clamp_min_zero": 0.004645499532885921,
+      "winner_rmc_mae": "sd15",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": -0.005787368326627952,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.002913775638806147
+    },
+    {
+      "class_name": "Industrial",
+      "n_real_test": 125,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.015872605476936148,
+      "sd15_rmc_rmse": 0.01774195959914766,
+      "sd15_rmc_sam_degrees": 2.5185701159318383,
+      "sd15_mean_spectrum_w1": 0.021094029542507813,
+      "sd15_between_image_std_ratio": 0.4814684620437166,
+      "sd15_within_image_std_ratio": 1.4169169069402698,
+      "sd15_rgb_gradient_ratio": 1.1141089955089583,
+      "sd15_negative_fraction": 0.0067210036057692305,
+      "sd15_above_one_fraction": 6.760817307692308e-05,
+      "sd15_min": -0.09912109375,
+      "sd15_max": 1.6689453125,
+      "sd15_rmc_mae_clamp_min_zero": 0.015865815957699505,
+      "unmixing_rmc_mae": 0.005701464228071579,
+      "unmixing_rmc_rmse": 0.007137830363115304,
+      "unmixing_rmc_sam_degrees": 1.3673290366394686,
+      "unmixing_mean_spectrum_w1": 0.010269536751148872,
+      "unmixing_between_image_std_ratio": 1.3930782094999932,
+      "unmixing_within_image_std_ratio": 0.9847973646411743,
+      "unmixing_rgb_gradient_ratio": 0.9443546396150772,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.6888744831085205,
+      "unmixing_rmc_mae_clamp_min_zero": 0.005701464228071579,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": 0.002835864829407627,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.014893682254383242
+    },
+    {
+      "class_name": "Pasture",
+      "n_real_test": 100,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.017542303926185318,
+      "sd15_rmc_rmse": 0.025244228134166193,
+      "sd15_rmc_sam_degrees": 2.325401543363364,
+      "sd15_mean_spectrum_w1": 0.019662226906770948,
+      "sd15_between_image_std_ratio": 0.6417229888812079,
+      "sd15_within_image_std_ratio": 1.1515124796511567,
+      "sd15_rgb_gradient_ratio": 0.6889274841919031,
+      "sd15_negative_fraction": 0.0008312049278846154,
+      "sd15_above_one_fraction": 0.0,
+      "sd15_min": -0.015625,
+      "sd15_max": 0.7841796875,
+      "sd15_rmc_mae_clamp_min_zero": 0.017541526131420723,
+      "unmixing_rmc_mae": 0.008302689412669503,
+      "unmixing_rmc_rmse": 0.010495192339669812,
+      "unmixing_rmc_sam_degrees": 0.3680999820418811,
+      "unmixing_mean_spectrum_w1": 0.012084693693744788,
+      "unmixing_between_image_std_ratio": 1.130612636565399,
+      "unmixing_within_image_std_ratio": 1.1374915849679126,
+      "unmixing_rgb_gradient_ratio": 0.5250918201062768,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.7699448466300964,
+      "unmixing_rmc_mae_clamp_min_zero": 0.008302689412669503,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": 0.0009373402617467834,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.01732426820301422
+    },
+    {
+      "class_name": "PermanentCrop",
+      "n_real_test": 125,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.018886361480470803,
+      "sd15_rmc_rmse": 0.02443320659287857,
+      "sd15_rmc_sam_degrees": 3.7111588748289956,
+      "sd15_mean_spectrum_w1": 0.023943499270021394,
+      "sd15_between_image_std_ratio": 0.3380374897283064,
+      "sd15_within_image_std_ratio": 0.8490782129337563,
+      "sd15_rgb_gradient_ratio": 0.5636250506454108,
+      "sd15_negative_fraction": 0.0006283804086538461,
+      "sd15_above_one_fraction": 0.0,
+      "sd15_min": -0.00927734375,
+      "sd15_max": 0.554168701171875,
+      "sd15_rmc_mae_clamp_min_zero": 0.018885880150039377,
+      "unmixing_rmc_mae": 0.0025717756967764704,
+      "unmixing_rmc_rmse": 0.0035231137673416906,
+      "unmixing_rmc_sam_degrees": 1.0068017257399917,
+      "unmixing_mean_spectrum_w1": 0.009485732064623739,
+      "unmixing_between_image_std_ratio": 0.9657393747119775,
+      "unmixing_within_image_std_ratio": 1.189881083169669,
+      "unmixing_rgb_gradient_ratio": 0.9349655701618366,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.6607820987701416,
+      "unmixing_rmc_mae_clamp_min_zero": 0.0025717756967764704,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": 0.007556872184325634,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.019919212914615108
+    },
+    {
+      "class_name": "Residential",
+      "n_real_test": 150,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.004542187590049639,
+      "sd15_rmc_rmse": 0.006333762716160789,
+      "sd15_rmc_sam_degrees": 1.6308042480935478,
+      "sd15_mean_spectrum_w1": 0.015406823481497939,
+      "sd15_between_image_std_ratio": 0.4038302665666155,
+      "sd15_within_image_std_ratio": 0.7628654353878866,
+      "sd15_rgb_gradient_ratio": 0.4011804069775355,
+      "sd15_negative_fraction": 0.00033259465144230767,
+      "sd15_above_one_fraction": 0.0,
+      "sd15_min": -0.01171875,
+      "sd15_max": 0.654541015625,
+      "sd15_rmc_mae_clamp_min_zero": 0.004541907723317555,
+      "unmixing_rmc_mae": 0.0036655419611564665,
+      "unmixing_rmc_rmse": 0.00442664503361913,
+      "unmixing_rmc_sam_degrees": 0.6793678203161952,
+      "unmixing_mean_spectrum_w1": 0.007007873011744655,
+      "unmixing_between_image_std_ratio": 1.0217220214132177,
+      "unmixing_within_image_std_ratio": 1.1200679087697056,
+      "unmixing_rgb_gradient_ratio": 0.990274149379125,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.5706509351730347,
+      "unmixing_rmc_mae_clamp_min_zero": 0.0036655419611564665,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": -0.004025879145669028,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.0035266916367222008
+    },
+    {
+      "class_name": "River",
+      "n_real_test": 125,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.006552846800964591,
+      "sd15_rmc_rmse": 0.008653127817151454,
+      "sd15_rmc_sam_degrees": 3.032860707005157,
+      "sd15_mean_spectrum_w1": 0.011465111640864077,
+      "sd15_between_image_std_ratio": 0.6229563817715025,
+      "sd15_within_image_std_ratio": 1.2618650605058386,
+      "sd15_rgb_gradient_ratio": 0.8809172902263325,
+      "sd15_negative_fraction": 0.032847806490384615,
+      "sd15_above_one_fraction": 0.0,
+      "sd15_min": -0.06298828125,
+      "sd15_max": 0.7403564453125,
+      "sd15_rmc_mae_clamp_min_zero": 0.006227388292693149,
+      "unmixing_rmc_mae": 0.0025432304988109162,
+      "unmixing_rmc_rmse": 0.002969307388521506,
+      "unmixing_rmc_sam_degrees": 1.2076858016594687,
+      "unmixing_mean_spectrum_w1": 0.011884891520567433,
+      "unmixing_between_image_std_ratio": 1.5051839468678503,
+      "unmixing_within_image_std_ratio": 1.0369046691895696,
+      "unmixing_rgb_gradient_ratio": 0.892274155805135,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.6909120678901672,
+      "unmixing_rmc_mae_clamp_min_zero": 0.0025432304988109162,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": -0.004615155810058485,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.007115724164524496
+    },
+    {
+      "class_name": "SeaLake",
+      "n_real_test": 150,
+      "n_generated_per_model": 100,
+      "sd15_rmc_mae": 0.006822455553972446,
+      "sd15_rmc_rmse": 0.010069301692988388,
+      "sd15_rmc_sam_degrees": 7.1995468435830485,
+      "sd15_mean_spectrum_w1": 0.007988269476339504,
+      "sd15_between_image_std_ratio": 1.3273390033015435,
+      "sd15_within_image_std_ratio": 1.555031785639359,
+      "sd15_rgb_gradient_ratio": 0.8300655534222774,
+      "sd15_negative_fraction": 0.023681640625,
+      "sd15_above_one_fraction": 4.6950120192307695e-06,
+      "sd15_min": -0.0439453125,
+      "sd15_max": 1.1787109375,
+      "sd15_rmc_mae_clamp_min_zero": 0.006773273908316528,
+      "unmixing_rmc_mae": 0.0018576204220921272,
+      "unmixing_rmc_rmse": 0.002387851069909292,
+      "unmixing_rmc_sam_degrees": 0.8346368794657691,
+      "unmixing_mean_spectrum_w1": 0.004564983273865517,
+      "unmixing_between_image_std_ratio": 0.7826633339404705,
+      "unmixing_within_image_std_ratio": 1.099001053024969,
+      "unmixing_rgb_gradient_ratio": 0.27141357029036395,
+      "unmixing_negative_fraction": 0.0,
+      "unmixing_above_one_fraction": 0.0,
+      "unmixing_min": 0.0,
+      "unmixing_max": 0.4782572090625763,
+      "unmixing_rmc_mae_clamp_min_zero": 0.0018576204220921272,
+      "winner_rmc_mae": "unmixing",
+      "bootstrap_sd_minus_unmixing_mae_ci_low": 0.000203373451263858,
+      "bootstrap_sd_minus_unmixing_mae_ci_high": 0.009456503181515283
+    }
+  ],
+  "provided_sd_csv_consistency": {
+    "AnnualCrop": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "Forest": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "HerbaceousVegetation": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "Highway": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "Industrial": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "Pasture": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "PermanentCrop": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "Residential": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "River": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    },
+    "SeaLake": {
+      "real_reference_max_abs_difference": 0.0,
+      "sd_generated_max_abs_difference": 0.0
+    }
+  },
+  "visual_sample_seed": 42,
+  "visual_samples": {
+    "AnnualCrop": {
+      "real": [
+        "data/EuroSAT_MS/AnnualCrop/AnnualCrop_216.tif",
+        "data/EuroSAT_MS/AnnualCrop/AnnualCrop_1056.tif",
+        "data/EuroSAT_MS/AnnualCrop/AnnualCrop_2236.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/AnnualCrop/AnnualCrop_sd15_008.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/AnnualCrop/AnnualCrop_sd15_069.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/AnnualCrop/AnnualCrop_sd15_084.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/AnnualCrop/MS/AnnualCrop_0052_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/AnnualCrop/MS/AnnualCrop_0097_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/AnnualCrop/MS/AnnualCrop_0074_eval.tif"
+      ]
+    },
+    "Forest": {
+      "real": [
+        "data/EuroSAT_MS/Forest/Forest_251.tif",
+        "data/EuroSAT_MS/Forest/Forest_706.tif",
+        "data/EuroSAT_MS/Forest/Forest_390.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Forest/Forest_sd15_091.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Forest/Forest_sd15_028.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Forest/Forest_sd15_080.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Forest/MS/Forest_0099_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Forest/MS/Forest_0031_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Forest/MS/Forest_0046_eval.tif"
+      ]
+    },
+    "HerbaceousVegetation": {
+      "real": [
+        "data/EuroSAT_MS/HerbaceousVegetation/HerbaceousVegetation_1022.tif",
+        "data/EuroSAT_MS/HerbaceousVegetation/HerbaceousVegetation_1598.tif",
+        "data/EuroSAT_MS/HerbaceousVegetation/HerbaceousVegetation_1673.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/HerbaceousVegetation/HerbaceousVegetation_sd15_024.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/HerbaceousVegetation/HerbaceousVegetation_sd15_062.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/HerbaceousVegetation/HerbaceousVegetation_sd15_032.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/HerbaceousVegetation/MS/HerbaceousVegetation_0099_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/HerbaceousVegetation/MS/HerbaceousVegetation_0029_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/HerbaceousVegetation/MS/HerbaceousVegetation_0097_eval.tif"
+      ]
+    },
+    "Highway": {
+      "real": [
+        "data/EuroSAT_MS/Highway/Highway_1714.tif",
+        "data/EuroSAT_MS/Highway/Highway_1955.tif",
+        "data/EuroSAT_MS/Highway/Highway_1121.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Highway/Highway_sd15_063.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Highway/Highway_sd15_076.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Highway/Highway_sd15_078.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Highway/MS/Highway_0052_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Highway/MS/Highway_0078_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Highway/MS/Highway_0068_eval.tif"
+      ]
+    },
+    "Industrial": {
+      "real": [
+        "data/EuroSAT_MS/Industrial/Industrial_1620.tif",
+        "data/EuroSAT_MS/Industrial/Industrial_315.tif",
+        "data/EuroSAT_MS/Industrial/Industrial_1534.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Industrial/Industrial_sd15_025.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Industrial/Industrial_sd15_014.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Industrial/Industrial_sd15_004.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Industrial/MS/Industrial_0033_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Industrial/MS/Industrial_0084_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Industrial/MS/Industrial_0078_eval.tif"
+      ]
+    },
+    "Pasture": {
+      "real": [
+        "data/EuroSAT_MS/Pasture/Pasture_742.tif",
+        "data/EuroSAT_MS/Pasture/Pasture_1147.tif",
+        "data/EuroSAT_MS/Pasture/Pasture_655.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Pasture/Pasture_sd15_073.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Pasture/Pasture_sd15_018.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Pasture/Pasture_sd15_040.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Pasture/MS/Pasture_0038_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Pasture/MS/Pasture_0077_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Pasture/MS/Pasture_0030_eval.tif"
+      ]
+    },
+    "PermanentCrop": {
+      "real": [
+        "data/EuroSAT_MS/PermanentCrop/PermanentCrop_414.tif",
+        "data/EuroSAT_MS/PermanentCrop/PermanentCrop_1156.tif",
+        "data/EuroSAT_MS/PermanentCrop/PermanentCrop_2268.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/PermanentCrop/PermanentCrop_sd15_011.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/PermanentCrop/PermanentCrop_sd15_003.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/PermanentCrop/PermanentCrop_sd15_023.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/PermanentCrop/MS/PermanentCrop_0014_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/PermanentCrop/MS/PermanentCrop_0090_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/PermanentCrop/MS/PermanentCrop_0023_eval.tif"
+      ]
+    },
+    "Residential": {
+      "real": [
+        "data/EuroSAT_MS/Residential/Residential_93.tif",
+        "data/EuroSAT_MS/Residential/Residential_1057.tif",
+        "data/EuroSAT_MS/Residential/Residential_158.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Residential/Residential_sd15_003.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Residential/Residential_sd15_085.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/Residential/Residential_sd15_060.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Residential/MS/Residential_0057_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Residential/MS/Residential_0072_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/Residential/MS/Residential_0013_eval.tif"
+      ]
+    },
+    "River": {
+      "real": [
+        "data/EuroSAT_MS/River/River_439.tif",
+        "data/EuroSAT_MS/River/River_2182.tif",
+        "data/EuroSAT_MS/River/River_1749.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/River/River_sd15_054.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/River/River_sd15_055.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/River/River_sd15_008.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/River/MS/River_0051_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/River/MS/River_0019_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/River/MS/River_0052_eval.tif"
+      ]
+    },
+    "SeaLake": {
+      "real": [
+        "data/EuroSAT_MS/SeaLake/SeaLake_2133.tif",
+        "data/EuroSAT_MS/SeaLake/SeaLake_838.tif",
+        "data/EuroSAT_MS/SeaLake/SeaLake_2915.tif"
+      ],
+      "sd15": [
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/SeaLake/SeaLake_sd15_083.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/SeaLake/SeaLake_sd15_037.tif",
+        "data/results_kaggle_sd/eurosat_sd15_analysis/generated_reflectance/SeaLake/SeaLake_sd15_062.tif"
+      ],
+      "unmixing": [
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/SeaLake/MS/SeaLake_0044_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/SeaLake/MS/SeaLake_0050_eval.tif",
+        "outputs/results/latent_unmixing_per_class/latent_unmixing_per_class-eval_1-latent_unmixing_per_class_ddpm-run_1/samples/SeaLake/MS/SeaLake_0012_eval.tif"
+      ]
+    }
+  },
+  "limitations": [
+    "Non sono disponibili manifest o indici dello split SD: non verificabile la separazione del suo training da questo test set.",
+    "I campioni latent unmixing provengono dalla directory eval della run 1; manca un manifest che certifichi epoca e hash del checkpoint usato.",
+    "La riflettanza latent unmixing e gia stata clippata a zero dal salvataggio; SD e analizzato sia raw sia con clip a zero.",
+    "RMC e statistiche spaziali non sono metriche percettive; il rapporto dei gradienti non misura da solo la qualita.",
+    "L intervallo bootstrap quantifica la variabilita dei campioni salvati, non quella fra run di training."
+  ],
+  "methodology": {
+    "rmc_mae": "Per classe: media sulle 13 bande del valore assoluto della differenza fra gli spettri medi di classe. Macro: media uniforme delle 10 classi.",
+    "rmc_sam_degrees": "Angolo in gradi fra i due spettri medi di classe, poi media uniforme sulle classi.",
+    "mean_spectrum_w1": "Wasserstein-1 empirica per banda fra le distribuzioni delle medie spaziali per immagine, poi media su bande e classi.",
+    "between_image_std_ratio": "Per classe: media sulle bande della std delle medie spaziali generate, divisa per la corrispondente media reale. Poi macro media sulle classi.",
+    "rgb_gradient_ratio": "Media delle differenze assolute fra pixel adiacenti su B4/B3/B2 lungo i due assi, rapporto generato/reale per classe e macro media. Indicatore spaziale descrittivo, non metrica percettiva.",
+    "bootstrap": "1000 ricampionamenti con rimpiazzo per classe e modello. Il riferimento reale ricampionato e identico nei due confronti. CI percentile al 95% della differenza macro MAE_SD - MAE_unmixing.",
+    "visuals": "Tre immagini casuali senza rimpiazzo per classe e sorgente; generatore NumPy seed 42; B4/B3/B2, divisione per 0.3 e clip RGB in [0,1], nessun auto-contrasto."
+  }
+}

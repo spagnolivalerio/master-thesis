@@ -1,8 +1,13 @@
 # Latent unmixing per class
 
+La [guida tecnica dettagliata](DOCUMENTAZIONE_TECNICA.md) collega obiettivi,
+architettura e codice: include motivazioni delle normalizzazioni, conversioni
+ILR, diagrammi dei flussi, checkpoint e punti da modificare. Preview e analisi
+dei risultati sono trattate separatamente dalla pipeline del modello.
+
 La variante possiede dieci istanze indipendenti dello stesso encoder e dieci
 banchi di basi apprendibili, uno per classe EuroSAT. Ogni banco contiene `K`
-spettri (`model.num_bases`, inizialmente 8).
+spettri, configurati tramite `model.num_bases` in `config.json`.
 
 Un campione attraversa esclusivamente l'encoder associato alla sua classe e
 viene ricostruito esclusivamente con il banco della stessa classe. Il DDPM e`

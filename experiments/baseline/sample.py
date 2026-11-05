@@ -1,5 +1,4 @@
 import argparse
-import json
 import sys
 from pathlib import Path
 
@@ -55,7 +54,7 @@ def next_sampling_directory(root, run_name):
     return path
 
 
-def main(args=None):
+def main(args=None, result_directory=None, suffix=""):
     # Calls from evaluation keep the default multi-class sampling behavior.
     if args is None:
         args = parse_args([])
@@ -89,9 +88,10 @@ def main(args=None):
     model.eval()
     scheduler = create_sampling_scheduler(config)
     run_name = checkpoint_path.stem.removesuffix("-best")
-    result_directory = next_sampling_directory(
-        Path(config["paths"]["results"]), run_name
-    )
+    if result_directory is None:
+        result_directory = next_sampling_directory(
+            Path(config["paths"]["results"]), run_name
+        )
     samples_directory = result_directory / "samples"
     samples_directory.mkdir()
 
@@ -119,7 +119,7 @@ def main(args=None):
             )
             for offset, image in enumerate(images, start=1):
                 index = start + offset
-                stem = f"{class_name}_{index:04d}"
+                stem = f"{class_name}_{index:04d}{suffix}"
                 save_generated_pair(
                     image,
                     ms_directory / f"{stem}.tif",
@@ -130,24 +130,6 @@ def main(args=None):
             progress.update(batch_size)
         progress.close()
 
-    with (result_directory / "generation_summary.json").open(
-        "w", encoding="utf-8"
-    ) as file:
-        json.dump(
-            {
-                "checkpoint": str(checkpoint_path.resolve()),
-                "checkpoint_epoch": checkpoint.get("epoch"),
-                "weights": checkpoint.get("weights"),
-                "mode": args.mode,
-                "classes": [class_name for _, class_name in selected_classes],
-                "num_samples": total_samples,
-                "inference_steps": config["sampling"]["inference_steps"],
-                "guidance_scale": config["cfg"]["guidance_scale"],
-                "seed": config["experiment"]["seed"],
-            },
-            file,
-            indent=2,
-        )
     print(f"Risultati salvati in {result_directory}")
     return result_directory
 

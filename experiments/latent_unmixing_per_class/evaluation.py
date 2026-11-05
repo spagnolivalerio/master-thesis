@@ -1,7 +1,6 @@
 """Generazione ed evaluation RMC con decodifica class-specific."""
 
 import argparse
-import csv
 import json
 import sys
 from pathlib import Path
@@ -67,12 +66,17 @@ def next_result_directory(root, run_name):
 @torch.inference_mode()
 def generate_samples(ddpm, unmixing, checkpoint, config, args, root, device):
     scheduler = create_sampling_scheduler(config)
+    selected_classes = list(enumerate(checkpoint["classes"]))
+    class_name = getattr(args, "class_name", None)
+    if class_name is not None:
+        selected_classes = [(checkpoint["classes"].index(class_name), class_name)]
+    suffix = getattr(args, "suffix", "_eval")
     progress = tqdm(
-        total=args.images_per_class * len(checkpoint["classes"]),
+        total=args.images_per_class * len(selected_classes),
         desc="Generazione per classe",
         dynamic_ncols=True,
     )
-    for class_index, class_name in enumerate(checkpoint["classes"]):
+    for class_index, class_name in selected_classes:
         ms_directory = root / class_name / "MS"
         rgb_directory = root / class_name / "RGB"
         ms_directory.mkdir(parents=True)
@@ -98,7 +102,7 @@ def generate_samples(ddpm, unmixing, checkpoint, config, args, root, device):
             images = unmixing.decode(abundances, labels)
             for image in images:
                 generated += 1
-                stem = f"{class_name}_{generated:04d}_eval"
+                stem = f"{class_name}_{generated:04d}{suffix}"
                 save_generated_pair(
                     image,
                     ms_directory / f"{stem}.tif",
@@ -232,17 +236,6 @@ def main():
         name: float(np.mean([entry[name] for entry in metrics.values()]))
         for name in names
     }
-    summary = {"per_class": metrics, "macro_average": macro}
-    with (result_directory / "evaluation.json").open("w", encoding="utf-8") as file:
-        json.dump(summary, file, indent=2)
-    with (result_directory / "evaluation.csv").open(
-        "w", encoding="utf-8", newline=""
-    ) as file:
-        writer = csv.writer(file)
-        writer.writerow(["class", *names])
-        for class_name, entry in metrics.items():
-            writer.writerow([class_name, *[entry[name] for name in names]])
-        writer.writerow(["macro_average", *[macro[name] for name in names]])
     print(json.dumps(macro, indent=2))
     return result_directory
 

@@ -1,7 +1,6 @@
 """Sampling ed evaluation spettrale del DDPM nello spazio ILR."""
 
 import argparse
-import csv
 import json
 import sys
 from pathlib import Path
@@ -258,24 +257,6 @@ def main():
         name: float(np.mean([values[name] for values in metrics.values()]))
         for name in names
     }
-    summary = {
-        "checkpoint": str(checkpoint_path.resolve()),
-        "checkpoint_epoch": checkpoint["epoch"],
-        "images_per_class": args.images_per_class,
-        "inference_steps": args.inference_steps,
-        "per_class": metrics,
-        "macro_average": macro,
-    }
-    with (result_directory / "evaluation.json").open("w", encoding="utf-8") as file:
-        json.dump(summary, file, indent=2)
-    with (result_directory / "evaluation.csv").open(
-        "w", encoding="utf-8", newline=""
-    ) as file:
-        writer = csv.writer(file)
-        writer.writerow(["class", *names])
-        for class_name, values in metrics.items():
-            writer.writerow([class_name, *[values[name] for name in names]])
-        writer.writerow(["macro_average", *[macro[name] for name in names]])
     print(json.dumps(macro, indent=2))
     print(f"Evaluation salvata in {result_directory}")
     return result_directory

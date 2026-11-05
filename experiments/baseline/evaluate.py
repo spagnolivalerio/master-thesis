@@ -1,7 +1,6 @@
 """Valutazione RMC della baseline, senza dipendenze da ``common``."""
 
 import argparse
-import csv
 import json
 import sys
 from pathlib import Path
@@ -129,7 +128,15 @@ def main():
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
 
     if args.path is None:
-        result_directory = sample()
+        root = Path(config["paths"]["results"])
+        root.mkdir(parents=True, exist_ok=True)
+        run_name = checkpoint_path.stem.removeprefix("baseline-").removesuffix("-best")
+        index = 1
+        while (root / f"baseline-eval_{index}-{run_name}").exists():
+            index += 1
+        result_directory = root / f"baseline-eval_{index}-{run_name}"
+        result_directory.mkdir()
+        sample(result_directory=result_directory, suffix="_eval")
         samples_directory = result_directory / "samples"
     else:
         samples_directory = args.path.resolve()
@@ -164,22 +171,6 @@ def main():
         key: float(np.mean([values[key] for values in metrics.values()]))
         for key in ("rmc_rmse",)
     }
-    summary = {
-        "checkpoint": str(checkpoint_path.resolve()),
-        "checkpoint_epoch": checkpoint.get("epoch"),
-        "per_class": metrics,
-        "macro_average": macro,
-    }
-    with (result_directory / "evaluation.json").open("w", encoding="utf-8") as file:
-        json.dump(summary, file, indent=2)
-    with (result_directory / "evaluation.csv").open(
-        "w", encoding="utf-8", newline=""
-    ) as file:
-        writer = csv.writer(file)
-        writer.writerow(["class", "rmc_rmse"])
-        for class_name, values in metrics.items():
-            writer.writerow([class_name, values["rmc_rmse"]])
-        writer.writerow(["macro_average", macro["rmc_rmse"]])
     print(json.dumps(macro, indent=2))
     print(f"Valutazione salvata in {result_directory}")
     return result_directory
