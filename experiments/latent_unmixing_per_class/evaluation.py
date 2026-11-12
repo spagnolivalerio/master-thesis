@@ -150,6 +150,44 @@ def draw(axis, real, generated, class_name, config):
     }
 
 
+def save_histogram_difference(real, generated, wavelengths, class_name, directory):
+    order = np.argsort(wavelengths)
+    real, generated = real[:, order], generated[:, order]
+    wavelengths = np.asarray(wavelengths)[order]
+    minimum = min(float(real.min()), float(generated.min()))
+    maximum = max(float(real.max()), float(generated.max()))
+    if minimum == maximum:
+        maximum = minimum + 1e-6
+    edges = np.linspace(minimum, maximum, 31)
+    differences = []
+    distances = []
+    for band in range(real.shape[1]):
+        real_hist = np.histogram(real[:, band], bins=edges)[0] / len(real)
+        generated_hist = np.histogram(generated[:, band], bins=edges)[0] / len(generated)
+        differences.append(generated_hist - real_hist)
+        distances.append(0.5 * np.abs(generated_hist - real_hist).sum())
+    differences = np.asarray(differences)
+    limit = max(float(np.abs(differences).max()), 1e-6)
+    figure, axis = plt.subplots(figsize=(12, 6))
+    image = axis.imshow(
+        differences,
+        aspect="auto",
+        extent=(edges[0], edges[-1], len(wavelengths) - 0.5, -0.5),
+        cmap="RdBu_r",
+        vmin=-limit,
+        vmax=limit,
+    )
+    axis.set_yticks(np.arange(len(wavelengths)), [f"{value:g}" for value in wavelengths])
+    axis.set_xlabel("Mean reflectance")
+    axis.set_ylabel("Wavelength (nm)")
+    axis.set_title(f"RMC histogram difference (generated − real) — {class_name}")
+    figure.colorbar(image, ax=axis, label="Probability difference")
+    figure.tight_layout()
+    figure.savefig(directory / f"rmc_histogram_difference_{class_name}.png", dpi=180)
+    plt.close(figure)
+    return float(np.mean(distances))
+
+
 def save_plots(values, config, directory):
     directory.mkdir(parents=True, exist_ok=True)
     metrics = {}
@@ -168,6 +206,13 @@ def save_plots(values, config, directory):
             class_values["generated"],
             class_name,
             config,
+        )
+        metrics[class_name]["rmc_histogram_tv"] = save_histogram_difference(
+            class_values["real"],
+            class_values["generated"],
+            config["data"]["wavelengths_nm"],
+            class_name,
+            directory,
         )
     axes.flat[0].legend()
     figure.supxlabel("Wavelength (nm)")
@@ -231,7 +276,7 @@ def main():
             "generated": spectra(generated[: args.images_per_class], 1.0),
         }
     metrics = save_plots(values, config, result_directory / "plots")
-    names = ("rmc_rmse", "rmc_mae")
+    names = ("rmc_rmse", "rmc_mae", "rmc_histogram_tv")
     macro = {
         name: float(np.mean([entry[name] for entry in metrics.values()]))
         for name in names

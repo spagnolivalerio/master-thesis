@@ -1,6 +1,6 @@
 {
   "_comment": [
-    "annotation_evaluation: classe delle maschere per il confronto RMC",
+    "annotation_evaluation: classe delle maschere e limiti Y comuni per il confronto RMC",
     "paths.annotation_images: TIFF e maschere reali e sintetiche; annotation_plots: output dei grafici",
     "fid_evaluation: batch size e caricamento dati della FID RGB per classe; percorsi in paths.fid_*"
   ],
@@ -67,7 +67,8 @@
     "inference_steps": 50
   },
   "annotation_evaluation": {
-    "mask_class": "water"
+    "mask_class": "water",
+    "y_limits": [0.0, 0.5]
   },
   "fid_evaluation": {
     "batch_size": 32,

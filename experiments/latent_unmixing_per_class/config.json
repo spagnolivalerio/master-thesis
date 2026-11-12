@@ -5,7 +5,7 @@
     "simplex: ILR con statistiche distinte per classe stimate sul training set",
     "ddpm_model: singola U-Net condizionale che genera campi ILR",
     "evaluation: la classe seleziona statistiche ILR e basi per la decodifica",
-    "annotation_evaluation: classe delle maschere per il confronto RMC; input e output in paths.annotation_*",
+    "annotation_evaluation: classe delle maschere e limiti Y comuni per il confronto RMC; input e output in paths.annotation_*",
     "fid_evaluation: batch size e caricamento dati della FID RGB per classe; percorsi in paths.fid_*"
   ],
   "experiment": {
@@ -97,7 +97,8 @@
     "inference_steps": 50
   },
   "annotation_evaluation": {
-    "mask_class": "water"
+    "mask_class": "water",
+    "y_limits": [0.0, 0.5]
   },
   "fid_evaluation": {
     "batch_size": 32,

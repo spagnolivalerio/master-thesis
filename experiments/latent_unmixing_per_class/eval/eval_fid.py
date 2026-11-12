@@ -1,7 +1,7 @@
 """FID RGB per classe: generate–reali e controllo reali–reali sullo stesso set.
 
 Esecuzione: python experiments/<esperimento>/eval/eval_fid.py
-Dipendenza aggiuntiva: pip install pytorch-fid==0.3.0
+Dipendenze: pip install "scipy<1.18" pytorch-fid==0.3.0
 Percorsi e batch size sono definiti nel config.json dell'esperimento.
 Lo script può essere copiato senza modifiche nella cartella eval di un altro
 esperimento con la stessa configurazione FID.
@@ -11,10 +11,8 @@ import csv
 import json
 from pathlib import Path
 
-import numpy as np
 import torch
-from pytorch_fid.fid_score import calculate_activation_statistics
-from pytorch_fid.inception import InceptionV3
+from pytorch_fid.fid_score import calculate_fid_given_paths
 
 
 EXPERIMENT_DIRECTORY = Path(__file__).resolve().parents[1]
@@ -40,22 +38,7 @@ def image_paths(directory):
     )
 
 
-def frechet_distance(real_mean, real_covariance, fake_mean, fake_covariance):
-    """Distanza fra gaussiane: ||m_r-m_f||² + tr(C_r+C_f-2√(√C_r C_f √C_r))."""
-    difference = real_mean.astype(np.float64) - fake_mean.astype(np.float64)
-    eigenvalues, eigenvectors = np.linalg.eigh(real_covariance)
-    # Le covarianze sono semidefinite positive; il clip elimina il roundoff negativo.
-    real_sqrt = (eigenvectors * np.sqrt(eigenvalues.clip(min=0))) @ eigenvectors.T
-    product = real_sqrt @ fake_covariance @ real_sqrt
-    product = (product + product.T) / 2
-    cross_trace = np.sqrt(np.linalg.eigvalsh(product).clip(min=0)).sum()
-    return float(
-        difference @ difference + np.trace(real_covariance)
-        + np.trace(fake_covariance) - 2 * cross_trace
-    )
-
-
-def evaluate_class(real_directory, fake_directory, model, device, settings):
+def evaluate_class(real_directory, fake_directory, device, settings):
     """Confronta tutte le immagini reali e generate di una singola classe."""
     real_paths = image_paths(real_directory)
     fake_paths = image_paths(fake_directory)
@@ -63,30 +46,23 @@ def evaluate_class(real_directory, fake_directory, model, device, settings):
         if len(paths) < 2:
             raise ValueError(f"La FID richiede almeno due immagini RGB in {directory}")
 
-    statistics = []
-    for label, paths in (("Real", real_paths), ("Fake", fake_paths)):
-        print(f"{fake_directory.name} — {label}: {len(paths)} immagini", flush=True)
-        statistics.append(calculate_activation_statistics(
-            paths, model,
-            batch_size=settings["batch_size"],
-            dims=FEATURE_DIMENSIONS,
-            device=device,
-            num_workers=settings["num_workers"],
-        ))
-    real_mean, real_covariance = statistics[0]
-    fake_mean, fake_covariance = statistics[1]
-    fid = frechet_distance(
-        real_mean, real_covariance, fake_mean, fake_covariance,
+    arguments = {
+        "batch_size": settings["batch_size"],
+        "device": device,
+        "dims": FEATURE_DIMENSIONS,
+        "num_workers": settings["num_workers"],
+    }
+    fid_value = calculate_fid_given_paths(
+        [str(real_directory), str(fake_directory)], **arguments
     )
-    # Riusa le statistiche dello stesso set reale, senza ripetere l'inferenza.
-    fid_real_real = frechet_distance(
-        real_mean, real_covariance, real_mean, real_covariance,
+    fid_real_real = calculate_fid_given_paths(
+        [str(real_directory), str(real_directory)], **arguments
     )
     return {
         "class": fake_directory.name,
         "real_images": len(real_paths),
         "fake_images": len(fake_paths),
-        "fid": float(fid),
+        "fid": float(fid_value),
         "fid_real_real": fid_real_real,
     }
 
@@ -114,7 +90,7 @@ def save_results(rows, config):
     directory.mkdir(parents=True, exist_ok=True)
     report = "\n".join([
         "FID RGB per classe — feature pytorch-fid 0.3.0, Inception-v3 pool3 (2048)",
-        "Distanza Fréchet in float64 mediante covarianze simmetriche.",
+        "Calcolo end-to-end con calculate_fid_given_paths di pytorch-fid.",
         f"Reali: {paths['fid_real_images']} (dataset completo per classe)",
         f"Generate: {paths['fid_fake_images']}",
         "Tutte le immagini disponibili; nessun sottocampionamento.",
@@ -142,16 +118,14 @@ def main():
     if not classes:
         raise ValueError(f"Nessuna cartella di classe in {paths['fid_fake_images']}")
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    block = InceptionV3.BLOCK_INDEX_BY_DIM[FEATURE_DIMENSIONS]
-    model = InceptionV3([block]).to(device).eval()
-    print(f"FID su {device} — {len(classes)} classi", flush=True)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"FID end-to-end con pytorch-fid su {device} — {len(classes)} classi", flush=True)
 
     rows = []
     for fake_directory in classes:
         row = evaluate_class(
             paths["fid_real_images"] / fake_directory.name,
-            fake_directory, model, device, config["fid_evaluation"],
+            fake_directory, device, config["fid_evaluation"],
         )
         rows.append(row)
         print(

@@ -60,3 +60,11 @@ collega l'output completo della run precedente e il dataset EuroSAT MS, poi
 esegui tutte le celle. Il notebook ripristina lo stato di training da `latest.pt`
 e mantiene congelato lo stesso VAE. Al termine esegue sampling dal best EMA
 ed evaluation sul test, salvando campioni MS/RGB, metriche, grafici e report.
+
+Per generare **2500 immagini River** dal best EMA della continuazione, usa
+[`stable-diffusion-msi-sample-river.ipynb`](kaggle/stable-diffusion-msi-sample-river.ipynb).
+Collega l'output completo della continuazione, abilita GPU e Internet ed esegui
+tutte le celle: il notebook salva TIFF a 13 bande in riflettanza float32 e PNG RGB
+corrispondenti sotto `outputs/results/`, senza richiedere EuroSAT. La continuazione
+ora esporta anche il VAE associato; per output precedenti collega anche la run
+originale che contiene il suo checkpoint VAE `best.pt`.

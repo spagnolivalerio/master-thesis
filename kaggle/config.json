@@ -1,0 +1,43 @@
+{
+  "_comments": [
+    "annotation_evaluation: RMC River su pixel water annotati e pixel ID 0 non annotati",
+    "fid_evaluation: batch size e caricamento dati della FID RGB per River",
+    "paths: cartelle RGB reali e generate e risultati; percorsi relativi alla root del progetto"
+  ],
+  "fid_evaluation": {
+    "batch_size": 32,
+    "num_workers": 0
+  },
+  "paths": {
+    "fid_real_images": "data/EuroSAT_RGB/River",
+    "fid_fake_images": "kaggle/eval/all-samples/RGB",
+    "fid_results": "outputs/results/stable_diffusion_msi/stable_diffusion_msi-eval_1-run_1/plots/fid",
+    "annotation_images": "kaggle/eval/img",
+    "annotation_plots": "outputs/results/stable_diffusion_msi/stable_diffusion_msi-eval_1-run_1/plots/annotations"
+  },
+  "data": {
+    "normalization_max": 10000,
+    "wavelengths_nm": [
+      443,
+      490,
+      560,
+      665,
+      705,
+      740,
+      783,
+      842,
+      945,
+      1375,
+      1610,
+      2190,
+      865
+    ]
+  },
+  "annotation_evaluation": {
+    "mask_class": "water",
+    "y_limits": [
+      0.0,
+      0.5
+    ]
+  }
+}
