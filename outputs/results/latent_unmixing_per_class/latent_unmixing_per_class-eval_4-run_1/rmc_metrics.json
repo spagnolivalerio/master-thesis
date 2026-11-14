@@ -1,0 +1,92 @@
+{
+  "class": "Highway",
+  "conditioning_class": "Highway",
+  "basis_class": "SeaLake",
+  "real_images": 100,
+  "generated_images": 100,
+  "metrics": {
+    "rmc_rmse": 0.09936304607976806,
+    "rmc_mae": 0.07927787251155854,
+    "rmc_histogram_tv": 0.6869230769230771
+  },
+  "rmc_by_band": {
+    "B1": {
+      "wavelength_nm": 443,
+      "real_mean_reflectance": 0.1334540947265626,
+      "generated_mean_reflectance": 0.1229408078745837,
+      "absolute_difference": 0.010513286851978915
+    },
+    "B2": {
+      "wavelength_nm": 490,
+      "real_mean_reflectance": 0.1098376374511719,
+      "generated_mean_reflectance": 0.09328262313676533,
+      "absolute_difference": 0.016555014314406563
+    },
+    "B3": {
+      "wavelength_nm": 560,
+      "real_mean_reflectance": 0.10238364453125,
+      "generated_mean_reflectance": 0.07525897119236107,
+      "absolute_difference": 0.027124673338888933
+    },
+    "B4": {
+      "wavelength_nm": 665,
+      "real_mean_reflectance": 0.09292095629882807,
+      "generated_mean_reflectance": 0.05353287185078443,
+      "absolute_difference": 0.03938808444804364
+    },
+    "B5": {
+      "wavelength_nm": 705,
+      "real_mean_reflectance": 0.12070417016601559,
+      "generated_mean_reflectance": 0.06572488718516979,
+      "absolute_difference": 0.0549792829808458
+    },
+    "B6": {
+      "wavelength_nm": 740,
+      "real_mean_reflectance": 0.21469179272460945,
+      "generated_mean_reflectance": 0.09081849940008396,
+      "absolute_difference": 0.12387329332452549
+    },
+    "B7": {
+      "wavelength_nm": 783,
+      "real_mean_reflectance": 0.25732826611328113,
+      "generated_mean_reflectance": 0.1026624130088203,
+      "absolute_difference": 0.15466585310446085
+    },
+    "B8": {
+      "wavelength_nm": 842,
+      "real_mean_reflectance": 0.2495636293945312,
+      "generated_mean_reflectance": 0.09804574472862441,
+      "absolute_difference": 0.15151788466590677
+    },
+    "B9": {
+      "wavelength_nm": 945,
+      "real_mean_reflectance": 0.07802790112304686,
+      "generated_mean_reflectance": 0.027833919472450362,
+      "absolute_difference": 0.0501939816505965
+    },
+    "B10": {
+      "wavelength_nm": 1375,
+      "real_mean_reflectance": 0.001188423339843733,
+      "generated_mean_reflectance": 0.0009502648951669812,
+      "absolute_difference": 0.00023815844467675194
+    },
+    "B11": {
+      "wavelength_nm": 1610,
+      "real_mean_reflectance": 0.19222634082031254,
+      "generated_mean_reflectance": 0.05515148664648223,
+      "absolute_difference": 0.1370748541738303
+    },
+    "B12": {
+      "wavelength_nm": 2190,
+      "real_mean_reflectance": 0.11754660034179686,
+      "generated_mean_reflectance": 0.030827137277428848,
+      "absolute_difference": 0.08671946306436801
+    },
+    "B8A": {
+      "wavelength_nm": 865,
+      "real_mean_reflectance": 0.28222671923828124,
+      "generated_mean_reflectance": 0.10445820695054862,
+      "absolute_difference": 0.1777685122877326
+    }
+  }
+}

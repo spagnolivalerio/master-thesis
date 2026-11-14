@@ -188,7 +188,12 @@ def save_histogram_difference(real, generated, wavelengths, class_name, director
     return float(np.mean(distances))
 
 
-def save_plots(values, config, directory):
+def save_plots(
+    values,
+    config,
+    directory,
+    title="Real and generated RMCs with class-specific bases",
+):
     directory.mkdir(parents=True, exist_ok=True)
     metrics = {}
     maximum = max(
@@ -197,7 +202,16 @@ def save_plots(values, config, directory):
         for samples in (class_values["real"], class_values["generated"])
     )
     y_limits = (0, maximum + max(maximum * 0.10, 0.01))
-    figure, axes = plt.subplots(2, 5, figsize=(24, 9), sharex=True, sharey=True)
+    columns = min(5, len(values))
+    rows = int(np.ceil(len(values) / columns))
+    figure, axes = plt.subplots(
+        rows,
+        columns,
+        figsize=(4.8 * columns, 4.5 * rows),
+        sharex=True,
+        sharey=True,
+        squeeze=False,
+    )
     axes.flat[0].set_ylim(*y_limits)
     for axis, (class_name, class_values) in zip(axes.flat, values.items()):
         metrics[class_name] = draw(
@@ -214,10 +228,12 @@ def save_plots(values, config, directory):
             class_name,
             directory,
         )
+    for axis in axes.flat[len(values):]:
+        axis.set_visible(False)
     axes.flat[0].legend()
     figure.supxlabel("Wavelength (nm)")
     figure.supylabel("Reflectance")
-    figure.suptitle("Real and generated RMCs with class-specific bases")
+    figure.suptitle(title)
     figure.tight_layout()
     figure.savefig(directory / "rmc_all_classes.png", dpi=180)
     plt.close(figure)

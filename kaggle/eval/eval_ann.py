@@ -84,6 +84,40 @@ def plot_rmc(real, fake, config, directory, unannotated=False):
         figure.savefig(directory / f"{prefix}_rmc_comparison.{extension}", dpi=180)
     plt.close(figure)
 
+    ordered_real, ordered_fake = real[:, order], fake[:, order]
+    minimum = min(float(ordered_real.min()), float(ordered_fake.min()))
+    maximum = max(float(ordered_real.max()), float(ordered_fake.max()))
+    if minimum == maximum:
+        maximum = minimum + 1e-6
+    edges = np.linspace(minimum, maximum, 31)
+    differences = []
+    distances = []
+    for band in range(ordered_real.shape[1]):
+        real_hist = np.histogram(ordered_real[:, band], bins=edges)[0] / len(real)
+        fake_hist = np.histogram(ordered_fake[:, band], bins=edges)[0] / len(fake)
+        differences.append(fake_hist - real_hist)
+        distances.append(0.5 * np.abs(fake_hist - real_hist).sum())
+    differences = np.asarray(differences)
+    limit = max(float(np.abs(differences).max()), 1e-6)
+    figure, axis = plt.subplots(figsize=(12, 6))
+    image = axis.imshow(
+        differences,
+        aspect="auto",
+        extent=(edges[0], edges[-1], len(wavelengths) - 0.5, -0.5),
+        cmap="RdBu_r",
+        vmin=-limit,
+        vmax=limit,
+    )
+    axis.set_yticks(np.arange(len(wavelengths)), [f"{value:g}" for value in wavelengths])
+    axis.set_xlabel("Mean reflectance")
+    axis.set_ylabel("Wavelength (nm)")
+    axis.set_title(f"RMC histogram difference (fake − real) — {region}")
+    figure.colorbar(image, ax=axis, label="Probability difference")
+    figure.tight_layout()
+    figure.savefig(directory / f"{prefix}_rmc_histogram_difference.png", dpi=180)
+    plt.close(figure)
+    return float(np.mean(distances))
+
 
 def main():
     config = load_config()
@@ -99,9 +133,12 @@ def main():
         fake = collect_spectra(
             root / "fake" / "tiff", root / "fake" / "mask", 1.0, mask_class, unannotated,
         )
-        plot_rmc(real, fake, config, directory, unannotated)
+        histogram_tv = plot_rmc(real, fake, config, directory, unannotated)
         region = "Non annotati" if unannotated else f"Annotati {mask_class}"
-        print(f"{region} — real: {len(real)} immagini; fake: {len(fake)} immagini")
+        print(
+            f"{region} — real: {len(real)} immagini; fake: {len(fake)} immagini; "
+            f"distanza istogrammi RMC: {histogram_tv:.6f}"
+        )
     print(f"Grafici salvati in {directory}")
 
 
