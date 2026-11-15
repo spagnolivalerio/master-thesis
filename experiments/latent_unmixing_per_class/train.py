@@ -14,6 +14,7 @@ from experiments.latent_unmixing_per_class import train_ddpm, train_encoder
 
 
 def main():
+    """Run class-specific latent-unmixing training from the experiment config."""
     parser = argparse.ArgumentParser(description="Training latent unmixing per class")
     parser.add_argument(
         "--stage", choices=("all", "encoder", "ddpm"), default="all"

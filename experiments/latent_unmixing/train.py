@@ -12,6 +12,7 @@ from experiments.latent_unmixing import train_ddpm, train_encoder
 
 
 def parse_args():
+    """Parse the training options using experiment-config defaults."""
     parser = argparse.ArgumentParser(description="Training latent unmixing")
     parser.add_argument(
         "--stage",
@@ -23,6 +24,7 @@ def parse_args():
 
 
 def main():
+    """Run the latent-unmixing training workflow."""
     args = parse_args()
     if args.stage in ("all", "encoder"):
         train_encoder.main()

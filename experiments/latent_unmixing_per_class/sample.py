@@ -23,6 +23,7 @@ from experiments.latent_unmixing_per_class.utils import (
 
 
 def main():
+    """Load the best checkpoint and save generated multispectral and RGB samples."""
     config = load_config()
     parser = argparse.ArgumentParser(description="Sampling di una classe EuroSAT")
     parser.add_argument("--class", dest="class_name", required=True)

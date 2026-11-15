@@ -43,6 +43,7 @@ from experiments.latent_unmixing_per_class.utils import (
 
 @torch.inference_mode()
 def validate(ddpm, unmixing, loader, scheduler, stats, config, device, use_fp16):
+    """Evaluate the class-conditional DDPM loss over the validation split."""
     ddpm.eval()
     total, count = 0.0, 0
     generator = torch.Generator(device=device).manual_seed(
@@ -72,6 +73,7 @@ def validate(ddpm, unmixing, loader, scheduler, stats, config, device, use_fp16)
 
 @torch.inference_mode()
 def save_preview(ddpm, unmixing, scheduler, stats, band_stats, config, path, device):
+    """Generate and save a fixed class-conditional sample preview."""
     labels = torch.arange(config["data"]["num_classes"], device=device)
     generator = torch.Generator(device=device).manual_seed(
         config["experiment"]["seed"]
@@ -93,6 +95,7 @@ def save_preview(ddpm, unmixing, scheduler, stats, band_stats, config, path, dev
 
 
 def main():
+    """Train the class-conditional ILR diffusion model and save checkpoints."""
     config = load_config()
     settings = config["ddpm_training"]
     seed = config["experiment"]["seed"]

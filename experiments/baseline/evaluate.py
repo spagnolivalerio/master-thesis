@@ -1,5 +1,3 @@
-"""Valutazione RMC della baseline, senza dipendenze da ``common``."""
-
 import argparse
 import json
 import sys
@@ -25,6 +23,7 @@ from experiments.baseline.utils import latest_checkpoint, load_config
 
 
 def parse_args():
+    """Parse the optional sample directory used for evaluation."""
     parser = argparse.ArgumentParser(description="Valuta i campioni della baseline")
     parser.add_argument(
         "--path",
@@ -35,6 +34,7 @@ def parse_args():
 
 
 def read_image_spectrum(path, scale):
+    """Load an image and average its reflectance across spatial pixels."""
     image = tifffile.imread(path).astype(np.float64)
     if image.ndim != 3:
         raise ValueError(f"TIFF non valido {path}: {image.shape}")
@@ -42,11 +42,13 @@ def read_image_spectrum(path, scale):
 
 
 def generated_paths(samples_directory, class_name):
+    """List generated multispectral TIFF files for one class."""
     directory = samples_directory / class_name / "MS"
     return sorted((*directory.glob("*.tif"), *directory.glob("*.tiff")))
 
 
 def real_paths_by_class(dataset, test_indices):
+    """Group real image paths by class for the selected dataset indices."""
     paths = {name: [] for name in dataset.classes}
     for index in test_indices:
         path, label = dataset.samples[index]
@@ -55,6 +57,7 @@ def real_paths_by_class(dataset, test_indices):
 
 
 def draw_comparison(axis, real, generated, class_name, config):
+    """Plot real and generated mean RMCs and return their RMSE."""
     order = np.argsort(config["data"]["wavelengths_nm"])
     wavelengths = np.asarray(config["data"]["wavelengths_nm"])[order]
     real_mean = real.mean(axis=0)[order]
@@ -80,45 +83,23 @@ def draw_comparison(axis, real, generated, class_name, config):
     return float(np.sqrt(np.mean((real_mean - generated_mean) ** 2)))
 
 
-def save_histogram_difference(real, generated, wavelengths, class_name, directory):
-    order = np.argsort(wavelengths)
-    real, generated = real[:, order], generated[:, order]
-    wavelengths = np.asarray(wavelengths)[order]
-    minimum = min(float(real.min()), float(generated.min()))
-    maximum = max(float(real.max()), float(generated.max()))
-    if minimum == maximum:
-        maximum = minimum + 1e-6
-    edges = np.linspace(minimum, maximum, 31)
-    differences = []
-    distances = []
-    for band in range(real.shape[1]):
-        real_hist = np.histogram(real[:, band], bins=edges)[0] / len(real)
-        generated_hist = np.histogram(generated[:, band], bins=edges)[0] / len(generated)
-        differences.append(generated_hist - real_hist)
-        distances.append(0.5 * np.abs(generated_hist - real_hist).sum())
-    differences = np.asarray(differences)
-    limit = max(float(np.abs(differences).max()), 1e-6)
-    figure, axis = plt.subplots(figsize=(12, 6))
-    image = axis.imshow(
-        differences,
-        aspect="auto",
-        extent=(edges[0], edges[-1], len(wavelengths) - 0.5, -0.5),
-        cmap="RdBu_r",
-        vmin=-limit,
-        vmax=limit,
+def rmc_euclidean_distance(real, generated):
+    """Compute Euclidean distance between the mean real and generated RMCs."""
+    difference = generated.mean(axis=0) - real.mean(axis=0)
+    return float(np.linalg.norm(difference))
+
+
+def rmc_sam_degrees(real, generated):
+    """Compute the spectral angle between mean RMCs in degrees."""
+    real_mean, generated_mean = real.mean(axis=0), generated.mean(axis=0)
+    cosine = np.dot(real_mean, generated_mean) / max(
+        np.linalg.norm(real_mean) * np.linalg.norm(generated_mean), 1e-12
     )
-    axis.set_yticks(np.arange(len(wavelengths)), [f"{value:g}" for value in wavelengths])
-    axis.set_xlabel("Mean reflectance")
-    axis.set_ylabel("Wavelength (nm)")
-    axis.set_title(f"RMC histogram difference (fake − real) — {class_name}")
-    figure.colorbar(image, ax=axis, label="Probability difference")
-    figure.tight_layout()
-    figure.savefig(directory / f"rmc_histogram_difference_{class_name}.png", dpi=180)
-    plt.close(figure)
-    return float(np.mean(distances))
+    return float(np.degrees(np.arccos(np.clip(cosine, -1.0, 1.0))))
 
 
 def save_plots(spectra, config, plots_directory):
+    """Save class-level RMC plots and return their metrics."""
     plots_directory.mkdir(exist_ok=True)
     metrics = {}
     maximum = max(
@@ -133,14 +114,15 @@ def save_plots(spectra, config, plots_directory):
         rmse = draw_comparison(
             axis, values["real"], values["generated"], class_name, config
         )
-        metrics[class_name] = {"rmc_rmse": rmse}
-        metrics[class_name]["rmc_histogram_tv"] = save_histogram_difference(
-            values["real"],
-            values["generated"],
-            config["data"]["wavelengths_nm"],
-            class_name,
-            plots_directory,
-        )
+        metrics[class_name] = {
+            "rmc_rmse": rmse,
+            "rmc_euclidean_distance": rmc_euclidean_distance(
+                values["real"], values["generated"]
+            ),
+            "rmc_sam_degrees": rmc_sam_degrees(
+                values["real"], values["generated"]
+            ),
+        }
         class_figure, class_axis = plt.subplots(figsize=(10, 6))
         draw_comparison(
             class_axis, values["real"], values["generated"], class_name, config
@@ -163,6 +145,7 @@ def save_plots(spectra, config, plots_directory):
 
 
 def main():
+    """Run baseline sampling if needed, evaluate RMCs, and save results."""
     args = parse_args()
     config = load_config()
     checkpoint_path = latest_checkpoint(
@@ -214,7 +197,7 @@ def main():
     metrics = save_plots(spectra, config, result_directory / "plots")
     macro = {
         key: float(np.mean([values[key] for values in metrics.values()]))
-        for key in ("rmc_rmse", "rmc_histogram_tv")
+        for key in ("rmc_rmse", "rmc_euclidean_distance", "rmc_sam_degrees")
     }
     print(json.dumps(macro, indent=2))
     print(f"Valutazione salvata in {result_directory}")

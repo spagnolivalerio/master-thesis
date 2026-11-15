@@ -38,6 +38,7 @@ from experiments.baseline.utils import (
 
 @torch.inference_mode()
 def compute_mse(model, loader, scheduler, config, device, use_fp16):
+    """Compute the diffusion noise-prediction MSE loss."""
     model.eval()
     total = 0.0
     count = 0
@@ -65,6 +66,7 @@ def compute_mse(model, loader, scheduler, config, device, use_fp16):
 
 
 def main():
+    """Train the baseline diffusion model using its experiment configuration."""
     config = load_config()
     seed = config["experiment"]["seed"]
     set_seed(seed)

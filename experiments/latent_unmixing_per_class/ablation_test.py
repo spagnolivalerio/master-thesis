@@ -6,6 +6,11 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 from tqdm import tqdm
 
@@ -14,7 +19,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from dataset import EuroSATMSDataset
-from experiments.latent_unmixing_per_class.evaluation import save_plots, spectra
+from experiments.latent_unmixing_per_class.evaluation import (
+    rmc_euclidean_distance,
+    rmc_sam_degrees,
+    spectra,
+)
 from experiments.latent_unmixing_per_class.model import (
     ClassSpecificLatentUnmixingModel,
     create_ddpm_model,
@@ -36,7 +45,9 @@ def parse_args():
     parser.add_argument(
         "--config", type=Path, default=Path(__file__).with_name("config.json")
     )
-    parser.add_argument("--images-per-class", type=int)
+    parser.add_argument(
+        "--images-per-pair", "--images-per-class", dest="images_per_pair", type=int
+    )
     parser.add_argument("--batch-size", type=int)
     parser.add_argument("--inference-steps", type=int)
     parser.add_argument("--seed", type=int)
@@ -58,12 +69,14 @@ def next_result_directory(root, run_name, experiment_name):
 def generate_samples(
     ddpm, unmixing, checkpoint, config, settings, root, device, generator
 ):
-    """Generate each target class using a randomly chosen non-target basis bank."""
+    """Generate each target class with a fixed bank from every other class."""
     scheduler = create_sampling_scheduler(config)
     base_counts = {name: Counter() for name in checkpoint["classes"]}
     progress = tqdm(
-        total=settings["images_per_class"] * len(checkpoint["classes"]),
-        desc="Ablation per classe",
+        total=settings["images_per_pair"]
+        * len(checkpoint["classes"])
+        * (len(checkpoint["classes"]) - 1),
+        desc="Ablation target/base",
         dynamic_ncols=True,
     )
 
@@ -72,65 +85,137 @@ def generate_samples(
         rgb_directory = root / class_name / "RGB"
         ms_directory.mkdir(parents=True)
         rgb_directory.mkdir()
-        generated = 0
-        while generated < settings["images_per_class"]:
-            batch_size = min(
-                settings["batch_size"], settings["images_per_class"] - generated
-            )
-            target_labels = torch.full(
-                (batch_size,), target_index, dtype=torch.long, device=device
-            )
-            # Draw uniformly from all classes except the requested target class.
-            base_labels = torch.randint(
-                len(checkpoint["classes"]) - 1,
-                (batch_size,),
-                generator=generator,
-                device=device,
-            )
-            base_labels += base_labels >= target_index
-            latents = generate_ILR(
-                ddpm,
-                scheduler,
-                target_labels,
-                config,
-                settings["inference_steps"],
-                generator,
-            )
-            abundances = from_ILR(latents, target_labels, checkpoint["ilr_stats"])
-            images = unmixing.decode(abundances, base_labels)
-
-            for image, base_index in zip(images, base_labels.tolist()):
-                generated += 1
-                base_counts[class_name][checkpoint["classes"][base_index]] += 1
-                stem = f"{class_name}_{generated:04d}"
-                save_generated_pair(
-                    image,
-                    ms_directory / f"{stem}.tif",
-                    rgb_directory / f"{stem}.png",
-                    checkpoint["band_stats"],
-                    config,
+        for base_index, base_name in enumerate(checkpoint["classes"]):
+            if base_index == target_index:
+                continue
+            generated = 0
+            while generated < settings["images_per_pair"]:
+                batch_size = min(
+                    settings["batch_size"],
+                    settings["images_per_pair"] - generated,
                 )
-            progress.update(batch_size)
+                target_labels = torch.full(
+                    (batch_size,), target_index, dtype=torch.long, device=device
+                )
+                base_labels = torch.full(
+                    (batch_size,), base_index, dtype=torch.long, device=device
+                )
+                # Each sample gets its own Gaussian starting latent.
+                latents = generate_ILR(
+                    ddpm,
+                    scheduler,
+                    target_labels,
+                    config,
+                    settings["inference_steps"],
+                    generator,
+                )
+                abundances = from_ILR(latents, target_labels, checkpoint["ilr_stats"])
+                images = unmixing.decode(abundances, base_labels)
+
+                for image in images:
+                    generated += 1
+                    base_counts[class_name][base_name] += 1
+                    stem = f"{class_name}_from_{base_name}_{generated:04d}"
+                    save_generated_pair(
+                        image,
+                        ms_directory / f"{stem}.tif",
+                        rgb_directory / f"{stem}.png",
+                        checkpoint["band_stats"],
+                        config,
+                    )
+                progress.update(batch_size)
 
     progress.close()
     return base_counts
 
 
-def real_test_spectra(dataset, checkpoint, classes, images_per_class, scale):
-    """Load test-set TIFF paths grouped by class and compute their spectra."""
+def real_test_paths(dataset, checkpoint, classes, images_per_pair):
+    """Load test-set TIFF paths grouped by class."""
     paths_by_class = {name: [] for name in classes}
     for index in checkpoint["test_indices"]:
         path, label = dataset.samples[index]
         paths_by_class[dataset.classes[label]].append(path)
     for name, paths in paths_by_class.items():
-        if len(paths) < images_per_class:
+        if len(paths) < images_per_pair:
             raise ValueError(
                 f"Not enough real test images for {name}: found {len(paths)}"
             )
-    return {
-        name: spectra(paths_by_class[name][:images_per_class], scale)
-        for name in classes
+    return {name: paths[:images_per_pair] for name, paths in paths_by_class.items()}
+
+
+def confusion_matrices(samples_directory, classes, real):
+    """Compare every generated target/base pair with real samples of its target."""
+    generated_paths = {
+        (target, base): sorted(
+            (samples_directory / target / "MS").glob(f"{target}_from_{base}_*.tif")
+        )
+        for target in classes
+        for base in classes
+        if target != base
     }
+    generated_rmc = {
+        pair: spectra(paths, 1.0) for pair, paths in generated_paths.items()
+    }
+    euclidean_distances = np.zeros((len(classes), len(classes)))
+    sam_distances = np.zeros_like(euclidean_distances)
+    for row, target in enumerate(classes):
+        for column, base in enumerate(classes):
+            if target == base:
+                continue
+            generated_curves = generated_rmc[(target, base)]
+            euclidean_distances[row, column] = rmc_euclidean_distance(
+                real[target], generated_curves
+            )
+            sam_distances[row, column] = rmc_sam_degrees(
+                real[target], generated_curves
+            )
+    return euclidean_distances, sam_distances
+
+
+def summarize_rmc_metrics(values):
+    """Compute aggregate per-class RMC metrics without producing plots."""
+    metrics = {}
+    for class_name, samples in values.items():
+        real, generated = samples["real"], samples["generated"]
+        real_mean, generated_mean = real.mean(axis=0), generated.mean(axis=0)
+        difference = generated_mean - real_mean
+        metrics[class_name] = {
+            "rmc_rmse": float(np.sqrt(np.mean(difference**2))),
+            "rmc_mae": float(np.mean(np.abs(difference))),
+            "rmc_euclidean_distance": rmc_euclidean_distance(real, generated),
+            "rmc_sam_degrees": rmc_sam_degrees(real, generated),
+        }
+    return metrics
+
+
+def save_distance_matrix(matrix, classes, path, title, colorbar_label):
+    """Save a target-by-base heatmap with zero on the diagonal."""
+    figure, axis = plt.subplots(
+        figsize=(max(8, len(classes) * 0.8), max(7, len(classes) * 0.7))
+    )
+    image = axis.imshow(matrix, cmap="viridis")
+    axis.set_xticks(np.arange(len(classes)), classes, rotation=45, ha="right")
+    axis.set_yticks(np.arange(len(classes)), classes)
+    axis.set_xlabel("Base class")
+    axis.set_ylabel("Target class")
+    axis.set_title(title)
+    for row in range(len(classes)):
+        for column in range(len(classes)):
+            if np.isnan(matrix[row, column]):
+                continue
+            axis.text(
+                column,
+                row,
+                f"{matrix[row, column]:.3f}",
+                ha="center",
+                va="center",
+                color="white",
+                fontsize=8,
+            )
+    figure.colorbar(image, ax=axis, label=colorbar_label)
+    figure.tight_layout()
+    figure.savefig(path, dpi=180)
+    plt.close(figure)
 
 
 def main():
@@ -138,10 +223,10 @@ def main():
     args = parse_args()
     config = load_config(args.config)
     settings = {
-        "images_per_class": (
+        "images_per_pair": (
             config["evaluation"]["images_per_class"]
-            if args.images_per_class is None
-            else args.images_per_class
+            if args.images_per_pair is None
+            else args.images_per_pair
         ),
         "batch_size": (
             config["evaluation"]["batch_size"]
@@ -155,9 +240,11 @@ def main():
         ),
         "seed": config["experiment"]["seed"] if args.seed is None else args.seed,
     }
-    if min(settings["images_per_class"], settings["batch_size"], settings["inference_steps"]) <= 0:
+    if min(
+        settings["images_per_pair"], settings["batch_size"], settings["inference_steps"]
+    ) <= 0:
         raise ValueError(
-            "Images per class, batch size, and inference steps must be positive"
+            "Images per pair, batch size, and inference steps must be positive"
         )
     set_seed(settings["seed"])
 
@@ -172,13 +259,16 @@ def main():
         raise ValueError("The ablation requires at least two classes")
     dataset = EuroSATMSDataset(config["data"]["root"])
     classes = checkpoint["classes"]
-    real = real_test_spectra(
+    real_paths = real_test_paths(
         dataset,
         checkpoint,
         classes,
-        settings["images_per_class"],
-        config["data"]["normalization_max"],
+        settings["images_per_pair"],
     )
+    real = {
+        name: spectra(paths, config["data"]["normalization_max"])
+        for name, paths in real_paths.items()
+    }
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     unmixing = ClassSpecificLatentUnmixingModel(
@@ -217,11 +307,25 @@ def main():
         }
         for name in classes
     }
-    metrics = save_plots(
-        values,
-        config,
-        result_directory / "plots",
-        title="Real and generated RMCs with random non-target class bases",
+    metrics = summarize_rmc_metrics(values)
+    euclidean_distances, sam_distances = confusion_matrices(
+        samples_directory, classes, real
+    )
+    plots_directory = result_directory / "plots"
+    plots_directory.mkdir(parents=True, exist_ok=True)
+    save_distance_matrix(
+        euclidean_distances,
+        classes,
+        plots_directory / "target_base_rmc_euclidean_distance.png",
+        "Target/base distance — RMC vectors",
+        "Mean Euclidean distance from target RMC",
+    )
+    save_distance_matrix(
+        sam_distances,
+        classes,
+        plots_directory / "target_base_rmc_sam.png",
+        "Target/base distance — mean RMC curves",
+        "SAM to target class (degrees)",
     )
     summary = {
         "checkpoint": str(checkpoint_path),
@@ -230,8 +334,26 @@ def main():
             name: dict(counts) for name, counts in base_counts.items()
         },
         "per_class_metrics": metrics,
+        "target_base_rmc_euclidean_matrix": {
+            "target_classes": classes,
+            "base_classes": classes,
+            "metric": "mean Euclidean distance of generated RMC vectors from real target mean RMC",
+            "values": [
+                [None if np.isnan(value) else float(value) for value in row]
+                for row in euclidean_distances
+            ],
+        },
+        "target_base_rmc_sam_matrix": {
+            "target_classes": classes,
+            "base_classes": classes,
+            "metric": "spectral angle mapper in degrees",
+            "values": [
+                [None if np.isnan(value) else float(value) for value in row]
+                for row in sam_distances
+            ],
+        },
         "macro_metrics": {
-            key: sum(entry[key] for entry in metrics.values()) / len(metrics)
+            key: float(np.mean([entry[key] for entry in metrics.values()]))
             for key in next(iter(metrics.values()))
         },
     }

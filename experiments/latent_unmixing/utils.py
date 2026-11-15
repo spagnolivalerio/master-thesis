@@ -18,7 +18,7 @@ CONFIG_PATH = Path(__file__).with_name("config.json")
 
 
 def helmert_basis(num_components, *, dtype, device):
-    """Base ortonormale [K, K-1] del sottospazio a somma zero."""
+    """Return the orthonormal [K, K-1] basis of the zero-sum subspace."""
     if num_components < 2:
         raise ValueError("La trasformazione ILR richiede almeno due componenti")
     basis = torch.zeros(
@@ -32,6 +32,7 @@ def helmert_basis(num_components, *, dtype, device):
 
 
 def _raw_ILR(abundances, epsilon):
+    """Convert abundance maps to unstandardized ILR coordinates."""
     if abundances.ndim != 4 or abundances.shape[1] < 2:
         raise ValueError("Le abundance devono avere forma [B, K, H, W], con K >= 2")
     probabilities = abundances.float().clamp_min(epsilon)
@@ -45,6 +46,7 @@ def _raw_ILR(abundances, epsilon):
 
 
 def _ILR_statistics_tensors(statistics, reference):
+    """Format ILR mean and standard-deviation tensors for broadcasting."""
     channels = reference.shape[1]
     if statistics["latent_channels"] != channels:
         raise ValueError("Le statistiche ILR non corrispondono ai canali latenti")
@@ -61,18 +63,14 @@ def _ILR_statistics_tensors(statistics, reference):
 
 
 def to_ILR(abundances, statistics):
-    """Normalizza le abundance e restituisce coordinate ILR standardizzate.
-
-    La funzione applica floor positivo, chiusura sul simplesso, trasformazione
-    ILR di Helmert e standardizzazione con media/deviazione del training set.
-    """
+    """Normalize abundances and return standardized ILR coordinates."""
     raw = _raw_ILR(abundances, statistics["epsilon"])
     mean, standard_deviation = _ILR_statistics_tensors(statistics, raw)
     return (raw - mean) / standard_deviation
 
 
 def from_ILR(latents, statistics):
-    """De-standardizza coordinate ILR e ricostruisce abundance sul simplesso."""
+    """Unstandardize ILR coordinates and reconstruct simplex abundances."""
     if latents.ndim != 4:
         raise ValueError("I latenti ILR devono avere forma [B, K-1, H, W]")
     if not torch.isfinite(latents).all():
@@ -89,7 +87,7 @@ def from_ILR(latents, statistics):
 
 @torch.inference_mode()
 def compute_ILR_statistics(model, loader, config, device):
-    """Stima media e deviazione ILR usando esclusivamente il training set."""
+    """Estimate ILR means and standard deviations from training data only."""
     model.eval()
     latent_channels = config["model"]["num_bases"] - 1
     values_sum = torch.zeros(latent_channels, dtype=torch.float64)
@@ -120,6 +118,7 @@ def compute_ILR_statistics(model, loader, config, device):
 
 class BalancedBatchSampler(Sampler):
     def __init__(self, indices, targets, batch_size, num_classes, seed):
+        """Initialize a sampler that balances classes within each batch."""
         if batch_size % num_classes:
             raise ValueError("batch_size deve essere multiplo di num_classes")
         self.samples_per_class = batch_size // num_classes
@@ -134,12 +133,15 @@ class BalancedBatchSampler(Sampler):
         self.num_batches = math.ceil(largest / self.samples_per_class)
 
     def set_epoch(self, epoch):
+        """Set the epoch used to deterministically reshuffle class indices."""
         self.epoch = epoch
 
     def __len__(self):
+        """Return the number of balanced batches in an epoch."""
         return self.num_batches
 
     def __iter__(self):
+        """Yield batches containing the same number of samples per class."""
         generator = torch.Generator().manual_seed(self.seed + self.epoch)
         required = self.num_batches * self.samples_per_class
         pools = {}
@@ -162,6 +164,7 @@ class BalancedBatchSampler(Sampler):
 
 
 def load_config(path=CONFIG_PATH):
+    """Load the experiment config and resolve its paths from the project root."""
     with Path(path).open(encoding="utf-8") as file:
         config = json.load(file)
     config["data"]["root"] = str(PROJECT_ROOT / config["data"]["root"])
@@ -171,6 +174,7 @@ def load_config(path=CONFIG_PATH):
 
 
 def set_seed(seed):
+    """Seed Python, NumPy, and PyTorch random generators."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -178,6 +182,7 @@ def set_seed(seed):
 
 
 def get_random_state():
+    """Capture random-generator states for a reproducible checkpoint resume."""
     state = {
         "python": random.getstate(),
         "numpy": np.random.get_state(),
@@ -189,6 +194,7 @@ def get_random_state():
 
 
 def set_random_state(state):
+    """Restore Python, NumPy, and PyTorch random-generator states."""
     random.setstate(state["python"])
     np.random.set_state(state["numpy"])
     torch.set_rng_state(state["torch"])
@@ -197,6 +203,7 @@ def set_random_state(state):
 
 
 def append_log(path, values):
+    """Append one record to the run JSONL log."""
     path.parent.mkdir(parents=True, exist_ok=True)
     record = {"timestamp": datetime.now().isoformat(timespec="seconds"), **values}
     with path.open("a", encoding="utf-8") as file:
@@ -204,6 +211,7 @@ def append_log(path, values):
 
 
 def split_indices(dataset, config):
+    """Create reproducible stratified train, validation, and test indices."""
     split = config["data"]["split"]
     if not math.isclose(sum(split.values()), 1.0):
         raise ValueError("Le percentuali train/validation/test devono sommare a 1")
@@ -222,6 +230,7 @@ def split_indices(dataset, config):
 
 
 def compute_band_stats(dataset, train_indices, config):
+    """Estimate per-band reflectance statistics using training images."""
     settings = config["encoder_training"]
     loader = DataLoader(
         Subset(dataset, train_indices),
@@ -252,6 +261,7 @@ def compute_band_stats(dataset, train_indices, config):
 
 
 def load_or_compute_band_stats(dataset, train_indices, config):
+    """Load compatible band statistics or compute and save them."""
     path = Path(config["paths"]["encoder_checkpoints"]) / "band_stats.json"
     expected = {
         "root": config["data"]["root"],
@@ -272,6 +282,7 @@ def load_or_compute_band_stats(dataset, train_indices, config):
 
 
 def apply_band_normalization(dataset, statistics, config):
+    """Build a transform that standardizes reflectance per band."""
     mean = torch.tensor(statistics["mean"])[:, None, None]
     std = torch.tensor(statistics["standard_deviation"])[:, None, None]
     scale = config["data"]["normalization_max"]
@@ -279,6 +290,7 @@ def apply_band_normalization(dataset, statistics, config):
 
 
 def denormalize_bands(images, statistics):
+    """Convert standardized multispectral tensors back to reflectance."""
     shape = (1, -1, 1, 1) if images.ndim == 4 else (-1, 1, 1)
     mean = torch.as_tensor(
         statistics["mean"], dtype=images.dtype, device=images.device
@@ -292,6 +304,7 @@ def denormalize_bands(images, statistics):
 
 
 def sample_training_pixels(dataset, train_indices, num_bases, seed):
+    """Initialize class-specific bases from sampled training pixels."""
     generator = torch.Generator().manual_seed(seed)
     positions = torch.randperm(len(train_indices), generator=generator)[:num_bases]
     basis, sources = [], []
@@ -314,6 +327,7 @@ def sample_training_pixels(dataset, train_indices, num_bases, seed):
 
 
 def next_run_directory(root, prefix):
+    """Create the next available numbered run directory."""
     root.mkdir(parents=True, exist_ok=True)
     index = 1
     while (root / f"{prefix}-run_{index}").exists():
@@ -324,11 +338,13 @@ def next_run_directory(root, prefix):
 
 
 def latest_checkpoint(directory, prefix, kind="latest"):
+    """Find the most recently modified checkpoint of the requested kind."""
     candidates = list(Path(directory).glob(f"{prefix}-run_*-{kind}.pt"))
     return max(candidates, key=lambda path: path.stat().st_mtime) if candidates else None
 
 
 def save_generated_pair(image, ms_path, rgb_path, band_stats, config):
+    """Save a reflectance TIFF and its corresponding RGB preview."""
     reflectance = denormalize_bands(image.float().cpu(), band_stats).clamp_min(0)
     if not torch.isfinite(reflectance).all():
         raise FloatingPointError("Il sampling ha prodotto NaN o Inf")

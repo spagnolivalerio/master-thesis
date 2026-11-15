@@ -4,7 +4,7 @@ from pathlib import Path
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -15,9 +15,9 @@ from tqdm import tqdm
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from dataset import EuroSATMSDataset  # noqa: E402
-from experiments.latent_unmixing.model import LatentUnmixingModel  # noqa: E402
-from experiments.latent_unmixing.utils import (  # noqa: E402
+from dataset import EuroSATMSDataset
+from experiments.latent_unmixing.model import LatentUnmixingModel
+from experiments.latent_unmixing.utils import (
     BalancedBatchSampler,
     append_log,
     apply_band_normalization,
@@ -36,6 +36,7 @@ from experiments.latent_unmixing.utils import (  # noqa: E402
 
 @torch.inference_mode()
 def validate(model, loader, device, use_fp16):
+    """Evaluate encoder reconstruction loss over the validation split."""
     model.eval()
     total, count = 0.0, 0
     for images, _ in tqdm(loader, desc="Validazione encoder", leave=False):
@@ -49,12 +50,14 @@ def validate(model, loader, device, use_fp16):
 
 
 def spectral_axis(config):
+    """Return wavelength values ordered to match the spectral channels."""
     wavelengths = np.asarray(config["data"]["wavelengths_nm"])
     order = np.argsort(wavelengths)
     return wavelengths[order], order
 
 
 def save_basis_plot(model, band_stats, config, directory, epoch):
+    """Plot and save the learned spectral basis signatures."""
     mean = torch.tensor(band_stats["mean"])[None, :]
     std = torch.tensor(band_stats["standard_deviation"])[None, :]
     basis = model.latent_basis.detach().float().cpu() * std + mean
@@ -82,6 +85,7 @@ def save_basis_plot(model, band_stats, config, directory, epoch):
 
 @torch.inference_mode()
 def save_rmc_monitor(model, loader, band_stats, classes, config, directory, epoch, device):
+    """Save real and reconstructed mean RMCs for monitoring."""
     model.eval()
     num_classes = len(classes)
     channels = config["data"]["channels"]
@@ -147,6 +151,7 @@ def save_rmc_monitor(model, loader, band_stats, classes, config, directory, epoc
 
 
 def main():
+    """Train the abundance encoder and save its checkpoints and diagnostics."""
     config = load_config()
     settings = config["encoder_training"]
     seed = config["experiment"]["seed"]

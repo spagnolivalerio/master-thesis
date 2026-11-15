@@ -27,11 +27,7 @@ CONFIG_PATH = Path(__file__).with_name("config.json")
 
 
 def helmert_basis(num_components, *, dtype, device):
-    """Costruisce K-1 colonne ortonormali a somma zero, in una matrice [K,K-1].
-
-    La base permette di rappresentare i logaritmi centrati delle K abundance
-    con K-1 coordinate indipendenti, senza cambiare la risoluzione spaziale.
-    """
+    """Build K-1 orthonormal zero-sum basis vectors in a [K, K-1] matrix."""
     if num_components < 2:
         raise ValueError("La trasformazione ILR richiede almeno due componenti")
     basis = torch.zeros(
@@ -45,7 +41,7 @@ def helmert_basis(num_components, *, dtype, device):
 
 
 def _raw_ILR(abundances, epsilon):
-    """Converte le abundance in coordinate ILR, senza standardizzarle."""
+    """Convert abundance maps to unstandardized ILR coordinates."""
     if abundances.ndim != 4 or abundances.shape[1] < 2:
         raise ValueError("Le abundance devono avere forma [B,K,H,W]")
     # Evita log(0).
@@ -61,7 +57,7 @@ def _raw_ILR(abundances, epsilon):
 
 
 def _class_statistics(statistics, labels, reference):
-    """Seleziona media/std ILR per campione e le rende broadcastabili sui pixel."""
+    """Select per-class ILR statistics and shape them for pixelwise broadcasting."""
     if labels.ndim != 1 or len(labels) != len(reference):
         raise ValueError("Servono le label per selezionare le statistiche ILR")
     mean = torch.as_tensor(
@@ -79,18 +75,14 @@ def _class_statistics(statistics, labels, reference):
 
 
 def to_ILR(abundances, labels, statistics):
-    """Da abundance [B,K,H,W] a coordinate ILR standardizzate [B,K-1,H,W]."""
+    """Convert abundance maps to standardized ILR coordinates."""
     raw_latents = _raw_ILR(abundances, statistics["epsilon"])
     mean, std = _class_statistics(statistics, labels, raw_latents)
     return (raw_latents - mean) / std
 
 
 def from_ILR(latents, labels, statistics):
-    """Da ILR standardizzate a abundance positive con somma unitaria per pixel.
-
-    L'inversione recupera le abundance originarie entro gli effetti numerici
-    e del clamp a epsilon, usato per evitare componenti nulle.
-    """
+    """Convert standardized ILR coordinates to positive unit-sum abundances."""
     if latents.ndim != 4 or not torch.isfinite(latents).all():
         raise ValueError("Latenti ILR non validi")
     mean, std = _class_statistics(statistics, labels, latents)
@@ -109,11 +101,7 @@ def from_ILR(latents, labels, statistics):
 
 @torch.inference_mode()
 def compute_ILR_statistics(model, loader, config, device):
-    """Stima media/std per classe e coordinata ILR su tutti i pixel di training.
-
-    Il chiamante deve fornire un loader del solo training set. Il modello
-    viene impostato in eval e non vengono calcolati gradienti.
-    """
+    """Estimate per-class ILR means and standard deviations from training pixels."""
     model.eval()
     num_classes = config["data"]["num_classes"]
     latent_channels = config["model"]["num_bases"] - 1
@@ -161,6 +149,7 @@ class BalancedBatchSampler(Sampler):
     """
 
     def __init__(self, indices, targets, batch_size, num_classes, seed):
+        """Initialize a class-balanced sampler for the selected split."""
         if batch_size % num_classes:
             raise ValueError("batch_size deve essere multiplo di num_classes")
         self.samples_per_class = batch_size // num_classes
@@ -175,13 +164,15 @@ class BalancedBatchSampler(Sampler):
         self.num_batches = math.ceil(largest_class_size / self.samples_per_class)
 
     def set_epoch(self, epoch):
-        """Seleziona l'ordine dei campioni dell'epoca, anche dopo un resume."""
+        """Set the epoch used to deterministically reshuffle sample indices."""
         self.epoch = epoch
 
     def __len__(self):
+        """Return the number of balanced batches per epoch."""
         return self.num_batches
 
     def __iter__(self):
+        """Yield shuffled batches with equal counts for every class."""
         generator = torch.Generator().manual_seed(self.seed + self.epoch)
         required_per_class = self.num_batches * self.samples_per_class
         class_pools = {}
@@ -206,7 +197,7 @@ class BalancedBatchSampler(Sampler):
 
 
 def load_config(path=CONFIG_PATH):
-    """Legge il JSON e risolve i percorsi rispetto alla root del progetto."""
+    """Load the JSON config and resolve paths from the project root."""
     with Path(path).open(encoding="utf-8") as file:
         config = json.load(file)
     config["data"]["root"] = str(PROJECT_ROOT / config["data"]["root"])
@@ -216,7 +207,7 @@ def load_config(path=CONFIG_PATH):
 
 
 def set_seed(seed):
-    """Inizializza i generatori globali di Python, NumPy e PyTorch (CPU/CUDA)."""
+    """Seed Python, NumPy, and PyTorch random generators."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -224,7 +215,7 @@ def set_seed(seed):
 
 
 def get_random_state():
-    """Cattura gli stati RNG da inserire nel checkpoint per un resume fedele."""
+    """Capture random-generator states for a reproducible checkpoint resume."""
     state = {
         "python": random.getstate(),
         "numpy": np.random.get_state(),
@@ -236,7 +227,7 @@ def get_random_state():
 
 
 def set_random_state(state):
-    """Ripristina il punto raggiunto dai generatori, anziché riavviarli dal seed."""
+    """Restore Python, NumPy, and PyTorch random-generator states."""
     random.setstate(state["python"])
     np.random.set_state(state["numpy"])
     torch.set_rng_state(state["torch"])
@@ -245,7 +236,7 @@ def set_random_state(state):
 
 
 def append_log(path, values):
-    """Aggiunge subito un record JSONL al log della run, con timestamp locale."""
+    """Append one timestamped record to the run JSONL log."""
     path.parent.mkdir(parents=True, exist_ok=True)
     record = {"timestamp": datetime.now().isoformat(timespec="seconds"), **values}
     with path.open("a", encoding="utf-8") as file:
@@ -253,11 +244,7 @@ def append_log(path, values):
 
 
 def split_indices(dataset, config):
-    """Crea uno split stratificato e riproducibile usando le quote del config.
-
-    Ogni classe viene mescolata separatamente. Training e validation usano
-    quote arrotondate per difetto; il test riceve gli indici rimanenti.
-    """
+    """Create reproducible stratified train, validation, and test indices."""
     split = config["data"]["split"]
     generator = torch.Generator().manual_seed(config["experiment"]["seed"])
     train_indices, validation_indices, test_indices = [], [], []
@@ -276,11 +263,7 @@ def split_indices(dataset, config):
 
 
 def compute_band_stats(dataset, train_indices, config):
-    """Stima media/std per banda sui pixel di training, nello spazio di riflettanza.
-
-    Il dataset deve fornire i valori originali, prima della standardizzazione.
-    Le statistiche sono comuni a tutte le classi e vengono accumulate in float64.
-    """
+    """Estimate per-band reflectance statistics from training pixels."""
     settings = config["encoder_training"]
     loader = DataLoader(
         Subset(dataset, train_indices),
@@ -313,7 +296,7 @@ def compute_band_stats(dataset, train_indices, config):
 
 
 def load_or_compute_band_stats(dataset, train_indices, config):
-    """Riusa band_stats.json se la root del dataset coincide, altrimenti lo ricalcola."""
+    """Reuse compatible band statistics or recompute and save them."""
     path = Path(config["paths"]["encoder_checkpoints"]) / "band_stats.json"
     if path.exists():
         with path.open(encoding="utf-8") as file:
@@ -328,10 +311,7 @@ def load_or_compute_band_stats(dataset, train_indices, config):
 
 
 def apply_band_normalization(dataset, statistics, config):
-    """Imposta la trasformazione: valore originale → riflettanza → valore standardizzato.
-
-    Media/std hanno forma [C,1,1] e si applicano a tutti i pixel della banda.
-    """
+    """Build a transform from reflectance to per-band standardized values."""
     mean = torch.tensor(statistics["mean"])[:, None, None]
     std = torch.tensor(statistics["standard_deviation"])[:, None, None]
     scale = config["data"]["normalization_max"]
@@ -339,11 +319,7 @@ def apply_band_normalization(dataset, statistics, config):
 
 
 def denormalize_bands(images, statistics):
-    """Riporta un'immagine [C,H,W] o un batch [B,C,H,W] in riflettanza.
-
-    Non riapplica il fattore di scala intero del dataset: il risultato contiene
-    direttamente valori di riflettanza, come richiesto per i TIFF generati.
-    """
+    """Convert standardized images or batches back to reflectance."""
     broadcast_shape = (1, -1, 1, 1) if images.ndim == 4 else (-1, 1, 1)
     mean = torch.as_tensor(
         statistics["mean"], dtype=images.dtype, device=images.device
@@ -357,12 +333,7 @@ def denormalize_bands(images, statistics):
 
 
 def sample_class_training_pixels(dataset, train_indices, config):
-    """Inizializza i banchi [num_classes,K,C] con pixel di training per classe.
-
-    Sceglie K immagini distinte per classe e un pixel casuale da ciascuna.
-    Il dataset deve essere già standardizzato. Restituisce anche le posizioni
-    dei pixel scelti, da salvare nel checkpoint per tracciarne la provenienza.
-    """
+    """Initialize each class basis bank from sampled training pixels."""
     generator = torch.Generator().manual_seed(config["experiment"]["seed"])
     num_classes = config["data"]["num_classes"]
     num_bases = config["model"]["num_bases"]
@@ -389,7 +360,7 @@ def sample_class_training_pixels(dataset, train_indices, config):
 
 
 def next_run_directory(root, prefix):
-    """Crea la prima directory libera con nome <prefix>-run_i, partendo da 1."""
+    """Create the next available numbered run directory."""
     root.mkdir(parents=True, exist_ok=True)
     index = 1
     while (root / f"{prefix}-run_{index}").exists():
@@ -400,7 +371,7 @@ def next_run_directory(root, prefix):
 
 
 def latest_checkpoint(directory, prefix, kind="latest"):
-    """Trova il checkpoint del tipo richiesto modificato più recentemente."""
+    """Find the newest checkpoint matching the requested prefix and kind."""
     paths = list(Path(directory).glob(f"{prefix}-run_*-{kind}.pt"))
     if not paths:
         return None
@@ -408,12 +379,7 @@ def latest_checkpoint(directory, prefix, kind="latest"):
 
 
 def save_generated_pair(image, ms_path, rgb_path, band_stats, config):
-    """Salva un'immagine standardizzata come TIFF MS float32 e preview RGB.
-
-    Il chiamante prepara i percorsi e le directory sotto outputs/. I valori
-    negativi di riflettanza vengono portati a zero; l'RGB usa B4/B3/B2 e una
-    scala di visualizzazione che non modifica il TIFF multispettrale.
-    """
+    """Save a reflectance TIFF and its corresponding RGB preview."""
     reflectance = denormalize_bands(image.float().cpu(), band_stats).clamp_min(0)
     if not torch.isfinite(reflectance).all():
         raise FloatingPointError("Il sampling ha prodotto NaN o Inf")

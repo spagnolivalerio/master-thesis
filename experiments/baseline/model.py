@@ -1,7 +1,8 @@
 from diffusers import UNet2DModel
 
-# Factory for the ddpm
+
 def create_model(config):
+    """Create the class-conditional diffusion U-Net."""
     data = config["data"]
     model = config["model"]
     channels = tuple(

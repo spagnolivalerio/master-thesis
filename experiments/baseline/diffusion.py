@@ -3,6 +3,7 @@ from diffusers import DDIMScheduler, DDPMScheduler
 
 
 def create_training_scheduler(config):
+    """Build the DDPM noise scheduler used during training."""
     diffusion = config["diffusion"]
     return DDPMScheduler(
         num_train_timesteps=diffusion["timesteps"],
@@ -13,11 +14,13 @@ def create_training_scheduler(config):
 
 
 def create_sampling_scheduler(config):
+    """Build the DDIM scheduler used for inference."""
     return DDIMScheduler.from_config(create_training_scheduler(config).config)
 
 
 @torch.inference_mode()
 def generate(model, scheduler, labels, config, inference_steps, generator=None):
+    """Generate samples by running the configured reverse diffusion process."""
     data = config["data"]
     images = torch.randn(
         (len(labels), data["channels"], data["image_size"], data["image_size"]),

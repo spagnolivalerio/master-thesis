@@ -14,15 +14,15 @@ from tqdm import tqdm
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from dataset import EuroSATMSDataset  # noqa: E402
-from experiments.latent_unmixing.model import (  # noqa: E402
+from dataset import EuroSATMSDataset
+from experiments.latent_unmixing.model import (
     LatentUnmixingModel,
     create_ddpm_model,
     create_sampling_scheduler,
     create_training_scheduler,
     generate_ILR,
 )
-from experiments.latent_unmixing.utils import (  # noqa: E402
+from experiments.latent_unmixing.utils import (
     BalancedBatchSampler,
     append_log,
     apply_band_normalization,
@@ -41,6 +41,7 @@ from experiments.latent_unmixing.utils import (  # noqa: E402
 
 @torch.inference_mode()
 def validate(ddpm, encoder, loader, scheduler, ilr_stats, config, device, use_fp16):
+    """Evaluate the DDPM loss over the validation split."""
     ddpm.eval()
     total, count = 0.0, 0
     generator = torch.Generator(device=device).manual_seed(
@@ -70,6 +71,7 @@ def validate(ddpm, encoder, loader, scheduler, ilr_stats, config, device, use_fp
 
 @torch.inference_mode()
 def save_preview(ddpm, encoder, scheduler, ilr_stats, band_stats, config, path, device):
+    """Generate and save a fixed class-conditional sample preview."""
     labels = torch.arange(config["data"]["num_classes"], device=device)
     generator = torch.Generator(device=device).manual_seed(
         config["experiment"]["seed"]
@@ -91,6 +93,7 @@ def save_preview(ddpm, encoder, scheduler, ilr_stats, band_stats, config, path, 
 
 
 def load_encoder_state(config):
+    """Load the best trained abundance encoder checkpoint."""
     path = latest_checkpoint(
         config["paths"]["encoder_checkpoints"],
         "latent_unmixing_encoder",
@@ -104,6 +107,7 @@ def load_encoder_state(config):
 
 
 def main():
+    """Train the ILR diffusion model and save checkpoints and previews."""
     config = load_config()
     settings = config["ddpm_training"]
     seed = config["experiment"]["seed"]

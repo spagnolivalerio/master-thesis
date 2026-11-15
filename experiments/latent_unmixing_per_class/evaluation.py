@@ -35,6 +35,7 @@ from experiments.latent_unmixing_per_class.utils import (
 
 
 def parse_args(config):
+    """Parse evaluation options, defaulting to values from the experiment config."""
     parser = argparse.ArgumentParser(description="Evaluation per-class unmixing")
     parser.add_argument(
         "--images-per-class",
@@ -54,6 +55,7 @@ def parse_args(config):
 
 
 def next_result_directory(root, run_name):
+    """Create the next numbered evaluation directory for a checkpoint run."""
     root.mkdir(parents=True, exist_ok=True)
     index = 1
     while (root / f"latent_unmixing_per_class-eval_{index}-{run_name}").exists():
@@ -65,6 +67,7 @@ def next_result_directory(root, run_name):
 
 @torch.inference_mode()
 def generate_samples(ddpm, unmixing, checkpoint, config, args, root, device):
+    """Generate samples for each class and save paired TIFF and RGB files."""
     scheduler = create_sampling_scheduler(config)
     selected_classes = list(enumerate(checkpoint["classes"]))
     class_name = getattr(args, "class_name", None)
@@ -115,6 +118,7 @@ def generate_samples(ddpm, unmixing, checkpoint, config, args, root, device):
 
 
 def spectra(paths, scale):
+    """Load image paths and return one spatially averaged spectrum per image."""
     values = []
     for path in paths:
         image = tifffile.imread(path).astype(np.float64)
@@ -125,6 +129,7 @@ def spectra(paths, scale):
 
 
 def draw(axis, real, generated, class_name, config):
+    """Plot real and generated mean RMCs and return their summary metrics."""
     wavelengths = np.asarray(config["data"]["wavelengths_nm"])
     order = np.argsort(wavelengths)
     wavelengths = wavelengths[order]
@@ -150,42 +155,20 @@ def draw(axis, real, generated, class_name, config):
     }
 
 
-def save_histogram_difference(real, generated, wavelengths, class_name, directory):
-    order = np.argsort(wavelengths)
-    real, generated = real[:, order], generated[:, order]
-    wavelengths = np.asarray(wavelengths)[order]
-    minimum = min(float(real.min()), float(generated.min()))
-    maximum = max(float(real.max()), float(generated.max()))
-    if minimum == maximum:
-        maximum = minimum + 1e-6
-    edges = np.linspace(minimum, maximum, 31)
-    differences = []
-    distances = []
-    for band in range(real.shape[1]):
-        real_hist = np.histogram(real[:, band], bins=edges)[0] / len(real)
-        generated_hist = np.histogram(generated[:, band], bins=edges)[0] / len(generated)
-        differences.append(generated_hist - real_hist)
-        distances.append(0.5 * np.abs(generated_hist - real_hist).sum())
-    differences = np.asarray(differences)
-    limit = max(float(np.abs(differences).max()), 1e-6)
-    figure, axis = plt.subplots(figsize=(12, 6))
-    image = axis.imshow(
-        differences,
-        aspect="auto",
-        extent=(edges[0], edges[-1], len(wavelengths) - 0.5, -0.5),
-        cmap="RdBu_r",
-        vmin=-limit,
-        vmax=limit,
+def rmc_euclidean_distance(real, generated):
+    """Return Euclidean distance between the mean real and generated RMCs."""
+    difference = generated.mean(axis=0) - real.mean(axis=0)
+    return float(np.linalg.norm(difference))
+
+
+def rmc_sam_degrees(real, generated):
+    """Return SAM in degrees between the real and generated mean RMC vectors."""
+    real_mean = real.mean(axis=0)
+    generated_mean = generated.mean(axis=0)
+    cosine = np.dot(real_mean, generated_mean) / max(
+        np.linalg.norm(real_mean) * np.linalg.norm(generated_mean), 1e-12
     )
-    axis.set_yticks(np.arange(len(wavelengths)), [f"{value:g}" for value in wavelengths])
-    axis.set_xlabel("Mean reflectance")
-    axis.set_ylabel("Wavelength (nm)")
-    axis.set_title(f"RMC histogram difference (generated − real) — {class_name}")
-    figure.colorbar(image, ax=axis, label="Probability difference")
-    figure.tight_layout()
-    figure.savefig(directory / f"rmc_histogram_difference_{class_name}.png", dpi=180)
-    plt.close(figure)
-    return float(np.mean(distances))
+    return float(np.degrees(np.arccos(np.clip(cosine, -1.0, 1.0))))
 
 
 def save_plots(
@@ -194,6 +177,7 @@ def save_plots(
     directory,
     title="Real and generated RMCs with class-specific bases",
 ):
+    """Save per-class and aggregate RMC plots and collect metrics."""
     directory.mkdir(parents=True, exist_ok=True)
     metrics = {}
     maximum = max(
@@ -221,12 +205,11 @@ def save_plots(
             class_name,
             config,
         )
-        metrics[class_name]["rmc_histogram_tv"] = save_histogram_difference(
-            class_values["real"],
-            class_values["generated"],
-            config["data"]["wavelengths_nm"],
-            class_name,
-            directory,
+        metrics[class_name]["rmc_euclidean_distance"] = rmc_euclidean_distance(
+            class_values["real"], class_values["generated"]
+        )
+        metrics[class_name]["rmc_sam_degrees"] = rmc_sam_degrees(
+            class_values["real"], class_values["generated"]
         )
     for axis in axes.flat[len(values):]:
         axis.set_visible(False)
@@ -241,6 +224,7 @@ def save_plots(
 
 
 def main():
+    """Generate or load samples, evaluate their RMCs, and save evaluation results."""
     config = load_config()
     args = parse_args(config)
     set_seed(config["experiment"]["seed"])
@@ -292,7 +276,12 @@ def main():
             "generated": spectra(generated[: args.images_per_class], 1.0),
         }
     metrics = save_plots(values, config, result_directory / "plots")
-    names = ("rmc_rmse", "rmc_mae", "rmc_histogram_tv")
+    names = (
+        "rmc_rmse",
+        "rmc_mae",
+        "rmc_euclidean_distance",
+        "rmc_sam_degrees",
+    )
     macro = {
         name: float(np.mean([entry[name] for entry in metrics.values()]))
         for name in names

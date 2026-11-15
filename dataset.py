@@ -7,6 +7,7 @@ from torch.utils.data import Dataset
 
 class EuroSATMSDataset(Dataset):
     def __init__(self, DATA_ROOT, transform=None):
+        """Initialize the multispectral dataset and its image transform."""
         super().__init__()
         self.data_root = Path(DATA_ROOT)
         self.root = self.data_root
@@ -33,9 +34,11 @@ class EuroSATMSDataset(Dataset):
         self.targets = [label for _, label in self.samples]
 
     def __len__(self):
+        """Return the number of dataset samples."""
         return len(self.samples)
 
     def __getitem__(self, index):
+        """Load one multispectral image and return it with its class label."""
         hsi, cls = self.samples[index]
 
         hsi_numpy = tifffile.imread(hsi).astype(np.float32)

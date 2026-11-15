@@ -20,6 +20,7 @@ from experiments.baseline.utils import (
 
 
 def parse_args(argv=None):
+    """Parse the sampling options, using the experiment config as defaults."""
     parser = argparse.ArgumentParser(description="Generate baseline samples")
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument(
@@ -45,6 +46,7 @@ def parse_args(argv=None):
 
 
 def next_sampling_directory(root, run_name):
+    """Create the next numbered output directory for a sampling run."""
     root.mkdir(parents=True, exist_ok=True)
     index = 1
     while (root / f"baseline-sampling_{index}-{run_name}").exists():
@@ -56,6 +58,7 @@ def next_sampling_directory(root, run_name):
 
 def main(args=None, result_directory=None, suffix=""):
     # Calls from evaluation keep the default multi-class sampling behavior.
+    """Load the best checkpoint and save generated multispectral and RGB samples."""
     if args is None:
         args = parse_args([])
     config = load_config()

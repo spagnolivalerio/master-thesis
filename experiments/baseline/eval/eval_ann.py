@@ -20,7 +20,7 @@ from experiments.baseline.utils import load_config
 
 
 def read_region_spectrum(image_path, mask_path, scale, mask_class, unannotated=False):
-    """Firma media della classe annotata o dei pixel non assegnati (ID 0)."""
+    """Return the mean spectrum of annotated pixels or unassigned pixels (ID 0)."""
     with Image.open(mask_path) as mask:
         if unannotated:
             class_id = 0
@@ -37,7 +37,7 @@ def read_region_spectrum(image_path, mask_path, scale, mask_class, unannotated=F
 
 
 def collect_spectra(image_directory, mask_directory, scale, mask_class, unannotated=False):
-    """Una firma per immagine: le regioni grandi non ricevono un peso maggiore."""
+    """Collect one spectrum per image so larger regions receive no extra weight."""
     spectra = []
     for image_path in sorted(image_directory.glob("*.tif")):
         mask_path = mask_directory / f"{image_path.stem}_annotation.png"
@@ -52,13 +52,28 @@ def collect_spectra(image_directory, mask_directory, scale, mask_class, unannota
     return np.stack(spectra)
 
 
+def rmc_euclidean_distance(real, fake):
+    """Compute the Euclidean distance between the mean real and generated RMCs."""
+    difference = fake.mean(axis=0) - real.mean(axis=0)
+    return float(np.linalg.norm(difference))
+
+
+def rmc_sam_degrees(real, fake):
+    """Compute the spectral angle between mean RMCs in degrees."""
+    real_mean, fake_mean = real.mean(axis=0), fake.mean(axis=0)
+    cosine = np.dot(real_mean, fake_mean) / max(
+        np.linalg.norm(real_mean) * np.linalg.norm(fake_mean), 1e-12
+    )
+    return float(np.degrees(np.arccos(np.clip(cosine, -1.0, 1.0))))
+
+
 def plot_rmc(real, fake, config, directory, unannotated=False):
-    """Sovrappone le medie e le fasce ±1 SD delle firme delle singole immagini."""
+    """Plot the mean RMCs and ±1 SD ranges across images."""
     wavelengths = np.asarray(config["data"]["wavelengths_nm"])
     order = np.argsort(wavelengths)
     wavelengths = wavelengths[order]
     figure, axis = plt.subplots(figsize=(12, 7))
-    for label, spectra, color in (("Real", real, "black"), ("Fake", fake, "#E15759")):
+    for label, spectra, color in (("Real", real, "black"), ("Generated", fake, "#E15759")):
         mean = spectra.mean(axis=0)[order]
         # La SD è la radice della varianza campionaria; ha le unità della riflettanza.
         std = spectra.std(axis=0, ddof=1)[order]
@@ -79,46 +94,79 @@ def plot_rmc(real, fake, config, directory, unannotated=False):
         figure.savefig(directory / f"{prefix}_rmc_comparison.{extension}", dpi=180)
     plt.close(figure)
 
-    ordered_real, ordered_fake = real[:, order], fake[:, order]
-    minimum = min(float(ordered_real.min()), float(ordered_fake.min()))
-    maximum = max(float(ordered_real.max()), float(ordered_fake.max()))
-    if minimum == maximum:
-        maximum = minimum + 1e-6
-    edges = np.linspace(minimum, maximum, 31)
-    differences = []
-    distances = []
-    for band in range(ordered_real.shape[1]):
-        real_hist = np.histogram(ordered_real[:, band], bins=edges)[0] / len(real)
-        fake_hist = np.histogram(ordered_fake[:, band], bins=edges)[0] / len(fake)
-        differences.append(fake_hist - real_hist)
-        distances.append(0.5 * np.abs(fake_hist - real_hist).sum())
-    differences = np.asarray(differences)
-    limit = max(float(np.abs(differences).max()), 1e-6)
-    figure, axis = plt.subplots(figsize=(12, 6))
-    image = axis.imshow(
-        differences,
-        aspect="auto",
-        extent=(edges[0], edges[-1], len(wavelengths) - 0.5, -0.5),
-        cmap="RdBu_r",
-        vmin=-limit,
-        vmax=limit,
+    return {
+        "rmc_euclidean_distance": rmc_euclidean_distance(real, fake),
+        "rmc_sam_degrees": rmc_sam_degrees(real, fake),
+    }
+
+
+def plot_rmc_std_parallel(annotated, unannotated, config, directory):
+    """Save parallel coordinates of RMC standard deviations for both regions."""
+    order = np.argsort(config["data"]["wavelengths_nm"])
+    band_names = config["data"]["band_names"]
+    labels = [band_names[index] for index in order]
+    positions = np.arange(len(labels))
+    groups = [
+        ("Annotated pixels", annotated[0], annotated[1]),
+        ("Unannotated pixels", unannotated[0], unannotated[1]),
+    ]
+
+    profiles = [
+        (real.std(axis=0, ddof=1)[order], fake.std(axis=0, ddof=1)[order])
+        for _, real, fake in groups
+    ]
+    maximum = max(float(values.max()) for pair in profiles for values in pair)
+    y_max = max(maximum * 1.05, 1e-6)
+    colors = {"Real": "#1F77B4", "Generated": "#FF7F0E"}
+    figure, axes = plt.subplots(2, 1, figsize=(14, 9), sharey=True)
+
+    for axis, (title, _, _), (real_std, fake_std) in zip(axes, groups, profiles):
+        axis.vlines(positions, 0, y_max, color="#555555", linewidth=0.9, zorder=0)
+        axis.plot(positions, real_std, color=colors["Real"], linewidth=2.3, alpha=1.0)
+        axis.plot(positions, fake_std, color=colors["Generated"], linewidth=2.3, alpha=1.0)
+        axis.set_xticks(positions, labels)
+        axis.xaxis.set_ticks_position("top")
+        axis.tick_params(
+            axis="x", top=True, labeltop=True, bottom=False, labelbottom=False, pad=7
+        )
+        axis.set_xlim(-0.4, positions[-1] + 0.55)
+        axis.set_ylim(0, y_max)
+        axis.set_title(title, pad=28)
+        axis.grid(False)
+        axis.spines["top"].set_visible(False)
+        axis.spines["right"].set_visible(False)
+        axis.spines["bottom"].set_visible(False)
+
+        real_offset, fake_offset = 0, 0
+        if abs(real_std[-1] - fake_std[-1]) < y_max * 0.03:
+            real_offset, fake_offset = 5, -5
+        axis.annotate(
+            "Real", (positions[-1], real_std[-1]), xytext=(7, real_offset),
+            textcoords="offset points", color=colors["Real"], va="center",
+        )
+        axis.annotate(
+            "Generated", (positions[-1], fake_std[-1]), xytext=(7, fake_offset),
+            textcoords="offset points", color=colors["Generated"], va="center",
+        )
+
+    figure.text(
+        0.025, 0.5, "Reflectance standard deviation", rotation=90, va="center"
     )
-    axis.set_yticks(np.arange(len(wavelengths)), [f"{value:g}" for value in wavelengths])
-    axis.set_xlabel("Mean reflectance")
-    axis.set_ylabel("Wavelength (nm)")
-    axis.set_title(f"RMC histogram difference (fake − real) — {region}")
-    figure.colorbar(image, ax=axis, label="Probability difference")
-    figure.tight_layout()
-    figure.savefig(directory / f"{prefix}_rmc_histogram_difference.png", dpi=180)
+    figure.subplots_adjust(
+        left=0.08, right=0.95, top=0.96, bottom=0.04, hspace=0.48
+    )
+    directory.mkdir(parents=True, exist_ok=True)
+    figure.savefig(directory / "rmc_std_parallel.png", dpi=180, bbox_inches="tight")
     plt.close(figure)
-    return float(np.mean(distances))
 
 
 def main():
+    """Compare real and generated spectra for annotated and unannotated pixels."""
     config = load_config()
     root = Path(config["paths"]["annotation_images"])
     mask_class = config["annotation_evaluation"]["mask_class"]
     directory = Path(config["paths"]["annotation_plots"])
+    parallel_groups = {}
     for unannotated in (False, True):
         # EuroSAT reale usa valori scalati; i TIFF sintetici sono già riflettanze.
         real = collect_spectra(
@@ -128,12 +176,17 @@ def main():
         fake = collect_spectra(
             root / "fake" / "tiff", root / "fake" / "mask", 1.0, mask_class, unannotated,
         )
-        histogram_tv = plot_rmc(real, fake, config, directory, unannotated)
+        metrics = plot_rmc(real, fake, config, directory, unannotated)
+        parallel_groups[unannotated] = (real, fake)
         region = "Non annotati" if unannotated else f"Annotati {mask_class}"
         print(
-            f"{region} — real: {len(real)} immagini; fake: {len(fake)} immagini; "
-            f"distanza istogrammi RMC: {histogram_tv:.6f}"
+            f"{region} — real: {len(real)} immagini; generated: {len(fake)} immagini; "
+            f"distanza euclidea RMC: {metrics['rmc_euclidean_distance']:.6f}; "
+            f"SAM: {metrics['rmc_sam_degrees']:.6f}°"
         )
+    plot_rmc_std_parallel(
+        parallel_groups[False], parallel_groups[True], config, directory
+    )
     print(f"Grafici salvati in {directory}")
 
 

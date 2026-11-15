@@ -7,6 +7,7 @@ from torch import nn
 
 class ResidualBlock(nn.Module):
     def __init__(self, channels, norm_num_groups):
+        """Initialize the residual convolutions, normalization layers, and time projection."""
         super().__init__()
         self.norm_1 = nn.GroupNorm(norm_num_groups, channels)
         self.conv_1 = nn.Conv2d(
@@ -19,6 +20,7 @@ class ResidualBlock(nn.Module):
         self.activation = nn.SiLU()
 
     def forward(self, inputs):
+        """Apply the residual convolution block conditioned on the timestep embedding."""
         hidden = self.conv_1(self.activation(self.norm_1(inputs)))
         hidden = self.conv_2(self.activation(self.norm_2(hidden)))
         return inputs + hidden
@@ -28,6 +30,7 @@ class AbundanceEncoder(nn.Module):
     """Predice K abundance positive, con somma unitaria per ogni pixel."""
 
     def __init__(self, config):
+        """Initialize the network that predicts abundance maps from multispectral images."""
         super().__init__()
         data, settings = config["data"], config["model"]
         hidden = settings["hidden_channels"]
@@ -46,6 +49,7 @@ class AbundanceEncoder(nn.Module):
         self.activation = nn.SiLU()
 
     def forward(self, images):
+        """Encode multispectral images as per-pixel abundance logits and abundances."""
         hidden = self.input_projection(images)
         hidden = self.blocks(hidden)
         logits = self.output(self.activation(self.output_norm(hidden)))
@@ -57,6 +61,7 @@ class LatentUnmixingModel(nn.Module):
     """Encoder delle abundance con K basi globali e decoder strettamente lineare."""
 
     def __init__(self, config, initial_basis):
+        """Initialize the abundance encoder and spectral basis decoder."""
         super().__init__()
         expected = (config["model"]["num_bases"], config["data"]["channels"])
         if tuple(initial_basis.shape) != expected:
@@ -66,14 +71,17 @@ class LatentUnmixingModel(nn.Module):
         self.latent_basis = nn.Parameter(initial_basis.detach().clone().float())
 
     def encode(self, images):
+        """Map multispectral images to abundance maps."""
         return self.encoder(images)
 
     def decode(self, abundances):
+        """Reconstruct multispectral images from abundance maps and spectral bases."""
         if abundances.ndim != 4 or abundances.shape[1] != self.num_bases:
             raise ValueError("Forma delle abundance non valida")
         return torch.einsum("bkhw,kc->bchw", abundances, self.latent_basis)
 
     def forward(self, images):
+        """Encode the input, reconstruct it, and return intermediate values."""
         logits, abundances = self.encode(images)
         return {
             "logits": logits,
@@ -84,6 +92,7 @@ class LatentUnmixingModel(nn.Module):
 
 
 def create_ddpm_model(config):
+    """Create the conditional U-Net that predicts noise in ILR space."""
     settings = config["ddpm_model"]
     channels = tuple(
         settings["base_channels"] * multiplier
@@ -109,6 +118,7 @@ def create_ddpm_model(config):
 
 
 def create_training_scheduler(config):
+    """Build the DDPM noise scheduler used during training."""
     settings = config["diffusion"]
     return DDPMScheduler(
         num_train_timesteps=settings["timesteps"],
@@ -119,11 +129,13 @@ def create_training_scheduler(config):
 
 
 def create_sampling_scheduler(config):
+    """Build the DDIM scheduler used for inference."""
     return DDIMScheduler.from_config(create_training_scheduler(config).config)
 
 
 @torch.inference_mode()
 def generate_ILR(model, scheduler, labels, config, inference_steps, generator=None):
+    """Sample standardized ILR latents with classifier-free guidance."""
     latent_channels = config["model"]["num_bases"] - 1
     size = config["data"]["image_size"]
     latents = torch.randn(

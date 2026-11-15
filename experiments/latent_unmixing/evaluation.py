@@ -8,7 +8,7 @@ from pathlib import Path
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
 import numpy as np
 import tifffile
 import torch
@@ -18,14 +18,14 @@ from tqdm import tqdm
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from dataset import EuroSATMSDataset  # noqa: E402
-from experiments.latent_unmixing.model import (  # noqa: E402
+from dataset import EuroSATMSDataset
+from experiments.latent_unmixing.model import (
     LatentUnmixingModel,
     create_ddpm_model,
     create_sampling_scheduler,
     generate_ILR,
 )
-from experiments.latent_unmixing.utils import (  # noqa: E402
+from experiments.latent_unmixing.utils import (
     from_ILR,
     latest_checkpoint,
     load_config,
@@ -35,6 +35,7 @@ from experiments.latent_unmixing.utils import (  # noqa: E402
 
 
 def parse_args(config):
+    """Parse evaluation options, defaulting to values from the experiment config."""
     parser = argparse.ArgumentParser(description="Evaluation latent unmixing")
     parser.add_argument(
         "--images-per-class",
@@ -56,6 +57,7 @@ def parse_args(config):
 
 
 def next_evaluation_directory(root, run_name):
+    """Create the next numbered evaluation directory for a checkpoint run."""
     root.mkdir(parents=True, exist_ok=True)
     index = 1
     while (root / f"latent_unmixing-eval_{index}-{run_name}").exists():
@@ -67,6 +69,7 @@ def next_evaluation_directory(root, run_name):
 
 @torch.inference_mode()
 def generate_samples(ddpm, encoder, checkpoint, config, args, directory, device):
+    """Generate samples for each class and save paired TIFF and RGB files."""
     scheduler = create_sampling_scheduler(config)
     progress = tqdm(
         total=args.images_per_class * len(checkpoint["classes"]),
@@ -112,6 +115,7 @@ def generate_samples(ddpm, encoder, checkpoint, config, args, directory, device)
 
 
 def read_spectra(paths, scale):
+    """Load image paths and return one spatially averaged spectrum per image."""
     spectra = []
     for path in paths:
         image = tifffile.imread(path).astype(np.float64)
@@ -124,6 +128,7 @@ def read_spectra(paths, scale):
 
 
 def draw_rmc(axis, real, generated, class_name, config):
+    """Plot real and generated mean RMCs with their variability ranges."""
     wavelengths = np.asarray(config["data"]["wavelengths_nm"])
     order = np.argsort(wavelengths)
     wavelengths = wavelengths[order]
@@ -151,6 +156,7 @@ def draw_rmc(axis, real, generated, class_name, config):
 
 
 def save_histogram_difference(real, generated, wavelengths, class_name, directory):
+    """Save the per-band reflectance histogram difference plot."""
     order = np.argsort(wavelengths)
     real, generated = real[:, order], generated[:, order]
     wavelengths = np.asarray(wavelengths)[order]
@@ -189,6 +195,7 @@ def save_histogram_difference(real, generated, wavelengths, class_name, director
 
 
 def save_plots(spectra, config, directory):
+    """Save RMC and histogram plots and collect per-class metrics."""
     directory.mkdir(parents=True, exist_ok=True)
     metrics = {}
     maximum = max(
@@ -232,6 +239,7 @@ def save_plots(spectra, config, directory):
 
 
 def main():
+    """Generate or load samples, evaluate their RMCs, and save evaluation results."""
     config = load_config()
     args = parse_args(config)
     if args.images_per_class <= 0 or args.batch_size <= 0 or args.inference_steps <= 0:

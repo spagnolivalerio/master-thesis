@@ -20,7 +20,7 @@ IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
 
 
 def load_config():
-    """Legge il config locale; i percorsi sono relativi alla root del progetto."""
+    """Load the local config and resolve paths from the project root."""
     path = KAGGLE_ROOT / "config.json"
     config = json.loads(path.read_text(encoding="utf-8"))
     for key in ("fid_real_images", "fid_fake_images", "fid_results"):
@@ -29,7 +29,7 @@ def load_config():
 
 
 def image_paths(directory):
-    """Elenca le immagini RGB della sola cartella richiesta, in ordine stabile."""
+    """List RGB images for one class in a stable order."""
     return sorted(
         path for path in directory.iterdir()
         if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
@@ -37,7 +37,7 @@ def image_paths(directory):
 
 
 def evaluate_class(real_directory, fake_directory, device, settings):
-    """Confronta tutte le immagini reali e generate di una singola classe."""
+    """Compute FID between all real and generated images for one class."""
     real_paths = image_paths(real_directory)
     fake_paths = image_paths(fake_directory)
     for directory, paths in ((real_directory, real_paths), (fake_directory, fake_paths)):
@@ -66,7 +66,7 @@ def evaluate_class(real_directory, fake_directory, device, settings):
 
 
 def format_table(rows):
-    """Tabella a colonne allineate, leggibile anche senza un foglio di calcolo."""
+    """Format aligned result columns for plain-text output."""
     width = max(len("Classe"), *(len(row["class"]) for row in rows))
     header = (
         f"{'Classe':<{width}} | {'Reali':>7} | {'Generate':>8} | "
@@ -82,7 +82,7 @@ def format_table(rows):
 
 
 def save_results(rows, config):
-    """Salva conteggi, FID e provenienza delle immagini in TXT e CSV."""
+    """Save image counts, FID scores, and source paths as TXT and CSV."""
     paths = config["paths"]
     directory = paths["fid_results"]
     directory.mkdir(parents=True, exist_ok=True)
@@ -110,6 +110,7 @@ def save_results(rows, config):
 
 
 def main():
+    """Compute and save per-class FID scores for the configured image sets."""
     config = load_config()
     paths = config["paths"]
     device = "cuda" if torch.cuda.is_available() else "cpu"

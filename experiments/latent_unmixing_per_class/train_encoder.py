@@ -38,6 +38,7 @@ from experiments.latent_unmixing_per_class.utils import (
 
 @torch.inference_mode()
 def validate(model, loader, device, use_fp16):
+    """Evaluate class-specific encoder reconstruction loss on the validation split."""
     model.eval()
     total, count = 0.0, 0
     for images, labels in tqdm(loader, desc="Validazione encoder", leave=False):
@@ -52,12 +53,14 @@ def validate(model, loader, device, use_fp16):
 
 
 def spectral_axis(config):
+    """Return wavelength values ordered to match the spectral channels."""
     wavelengths = np.asarray(config["data"]["wavelengths_nm"])
     order = np.argsort(wavelengths)
     return wavelengths[order], order
 
 
 def save_bases(model, band_stats, classes, config, directory, epoch):
+    """Plot and save the learned per-class spectral bases."""
     mean = torch.tensor(band_stats["mean"])[None, None, :]
     std = torch.tensor(band_stats["standard_deviation"])[None, None, :]
     bases = model.latent_bases.detach().float().cpu() * std + mean
@@ -87,6 +90,7 @@ def save_bases(model, band_stats, classes, config, directory, epoch):
 
 @torch.inference_mode()
 def save_rmc(model, loader, band_stats, classes, config, directory, epoch, device):
+    """Save real and reconstructed mean RMC plots for each class."""
     model.eval()
     num_classes = len(classes)
     channels = config["data"]["channels"]
@@ -150,6 +154,7 @@ def save_rmc(model, loader, band_stats, classes, config, directory, epoch, devic
 
 
 def main():
+    """Train the class-specific abundance encoders and save diagnostics."""
     config = load_config()
     settings = config["encoder_training"]
     seed = config["experiment"]["seed"]

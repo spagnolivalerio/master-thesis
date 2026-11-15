@@ -117,6 +117,7 @@ def pairwise_mmd(bases):
     bandwidth_squared = max(bandwidth_squared, np.finfo(float).eps)
 
     def kernel(left, right):
+        """Compute the squared Euclidean distances used by the RBF kernel."""
         squared_distances = ((left[:, None] - right[None, :]) ** 2).sum(axis=-1)
         return np.exp(-squared_distances / (2 * bandwidth_squared))
 

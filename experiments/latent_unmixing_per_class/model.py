@@ -18,6 +18,7 @@ class ResidualBlock(nn.Module):
     """Due convoluzioni con connessione residua, senza cambiare la forma."""
 
     def __init__(self, channels, groups):
+        """Initialize the residual convolutions, normalization layers, and time projection."""
         super().__init__()
         self.norm_1 = nn.GroupNorm(groups, channels)
         self.conv_1 = nn.Conv2d(
@@ -30,6 +31,7 @@ class ResidualBlock(nn.Module):
         self.activation = nn.SiLU()
 
     def forward(self, inputs):
+        """Apply the residual convolution block conditioned on the timestep embedding."""
         hidden = self.norm_1(inputs)
         hidden = self.activation(hidden)
         hidden = self.conv_1(hidden)
@@ -47,6 +49,7 @@ class AbundanceEncoder(nn.Module):
     """
 
     def __init__(self, config):
+        """Initialize the network that predicts abundance maps from multispectral images."""
         super().__init__()
         data = config["data"]
         settings = config["model"]
@@ -70,7 +73,7 @@ class AbundanceEncoder(nn.Module):
         self.activation = nn.SiLU()
 
     def forward(self, images):
-        """Restituisce logits liberi e abundance, entrambi [B,K,H,W]."""
+        """Return unconstrained logits and normalized abundances with shape [B, K, H, W]."""
         hidden = self.input_projection(images)
         hidden = self.blocks(hidden)
         hidden = self.output_norm(hidden)
@@ -92,6 +95,7 @@ class ClassSpecificLatentUnmixingModel(nn.Module):
     """
 
     def __init__(self, config, initial_bases):
+        """Initialize the class-specific encoders and spectral basis banks."""
         super().__init__()
         self.num_classes = config["data"]["num_classes"]
         self.num_bases = config["model"]["num_bases"]
@@ -108,17 +112,14 @@ class ClassSpecificLatentUnmixingModel(nn.Module):
         self.latent_bases = nn.Parameter(initial_bases.detach().clone().float())
 
     def _validate_labels(self, images, labels):
+        """Check that labels match the input batch and valid class range."""
         if labels is None or labels.ndim != 1 or len(labels) != len(images):
             raise ValueError("Serve una label per ogni immagine")
         if labels.min() < 0 or labels.max() >= self.num_classes:
             raise ValueError("Label fuori intervallo")
 
     def encode(self, images, labels):
-        """Applica gli encoder per classe e conserva l'ordine del batch.
-
-        images: [B,C,H,W]; labels: [B], interi da 0 a num_classes - 1
-        sullo stesso device delle immagini. Restituisce due tensori [B,K,H,W].
-        """
+        """Encode each image with its class-specific encoder and preserve batch order."""
         self._validate_labels(images, labels)
         batch_size = images.shape[0]
         height, width = images.shape[2:]
@@ -140,11 +141,7 @@ class ClassSpecificLatentUnmixingModel(nn.Module):
         return logits, abundances
 
     def decode(self, abundances, labels):
-        """Ricostruisce [B,C,H,W] usando il banco della classe di ogni campione.
-
-        Per ogni banda c e pixel (h,w):
-        reconstruction[b,c,h,w] = sum_k abundances[b,k,h,w] * bases[b,k,c].
-        """
+        """Reconstruct images from abundances and the basis bank of each sample class."""
         if abundances.ndim != 4 or abundances.shape[1] != self.num_bases:
             raise ValueError("Forma delle abundance non valida")
         self._validate_labels(abundances, labels)
@@ -152,7 +149,7 @@ class ClassSpecificLatentUnmixingModel(nn.Module):
         return torch.einsum("bkhw,bkc->bchw", abundances, class_bases)
 
     def forward(self, images, labels):
-        """Esegue encoding e ricostruzione, esponendo i valori per la loss."""
+        """Encode inputs, reconstruct them, and return values needed by the loss."""
         logits, abundances = self.encode(images, labels)
         reconstruction = self.decode(abundances, labels)
         return {
@@ -164,7 +161,7 @@ class ClassSpecificLatentUnmixingModel(nn.Module):
 
 
 def create_ddpm_model(config):
-    """Crea la U-Net condizionale che predice il rumore nello spazio ILR."""
+    """Create the conditional U-Net that predicts noise in ILR space."""
     settings = config["ddpm_model"]
     block_channels = tuple(
         settings["base_channels"] * multiplier
@@ -197,7 +194,7 @@ def create_ddpm_model(config):
 
 
 def create_training_scheduler(config):
-    """Definisce il processo di rumore DDPM usato durante il training."""
+    """Build the DDPM noise scheduler used during training."""
     settings = config["diffusion"]
     return DDPMScheduler(
         num_train_timesteps=settings["timesteps"],
@@ -208,17 +205,13 @@ def create_training_scheduler(config):
 
 
 def create_sampling_scheduler(config):
-    """Usa DDIM per generare, con la stessa configurazione di rumore del DDPM."""
+    """Build the DDIM scheduler used for inference."""
     return DDIMScheduler.from_config(create_training_scheduler(config).config)
 
 
 @torch.inference_mode()
 def generate_ILR(model, scheduler, labels, config, inference_steps, generator=None):
-    """Dal rumore a coordinate ILR standardizzate [B,K-1,H,W] tramite CFG.
-
-    Il chiamante imposta model.eval() e converte poi il risultato in abundance
-    con from_ILR; il decoder ricostruisce infine le immagini multispettrali.
-    """
+    """Sample standardized ILR latents with classifier-free guidance."""
     latent_channels = config["model"]["num_bases"] - 1
     image_size = config["data"]["image_size"]
     guidance_scale = config["cfg"]["guidance_scale"]
