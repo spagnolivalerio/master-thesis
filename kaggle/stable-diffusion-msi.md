@@ -1,4 +1,4 @@
-# Stable Diffusion multispettrale su EuroSAT — documentazione tecnica
+# SD1.5 multispettrale su EuroSAT — documentazione tecnica
 
 Questa guida descrive [stable-diffusion-msi.ipynb](stable-diffusion-msi.ipynb).
 Collega obiettivi scientifici, rappresentazioni dei dati e funzioni del notebook,
@@ -839,8 +839,8 @@ bande, precisione e informazione fuori range.
 La directory segue il formato:
 
 ```text
-outputs/results/stable_diffusion_msi/
-  stable_diffusion_msi-sampling_i-run_j/
+outputs/results/SD1.5/
+  SD1.5-sampling_i-run_j/
     split_manifest.json
     sampling.json
     samples/<classe>/MS/<nome>.tif
@@ -910,7 +910,7 @@ usano riflettanze senza clipping.
 ### 4.5 File dell'evaluation e memoria
 
 ```text
-stable_diffusion_msi-eval_i-run_j/
+SD1.5-eval_i-run_j/
   split_manifest.json
   evaluation.json
   report.md

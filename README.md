@@ -1,36 +1,28 @@
 # Generazione di immagini satellitari multispettrali
 
-## Latent unmixing per class softmax
+## LLUM (Latent Linear Unmixing Model)
 
-- **Approccio:** generazione dei logits degli encoder per classe, seguita da
-  softmax per ottenere abundance positive con somma unitaria.
-- **Architettura:** encoder e basi indipendenti per classe, decoder lineare e
-  unica U-Net DDPM sui K logits standardizzati; nessuna trasformazione ILR.
-- **Condizionamento:** la classe seleziona encoder, basi e statistiche dei
-  logits e condiziona la U-Net tramite embedding e classifier-free guidance.
-- **Loss:** MSE di ricostruzione per gli encoder e MSE sul rumore per il DDPM.
-- **Focus:** confrontare la rappresentazione a K logits con le K-1 coordinate
-  ILR, applicando il vincolo sul simplesso soltanto prima della decodifica.
+- **Approccio:** apprendimento di abundance e basi spettrali specifiche per classe,
+  con generazione delle abundance nello spazio ILR tramite DDPM condizionale.
+- **Architettura:** encoder convoluzionale, decoder lineare per classe e U-Net DDPM.
+- **Condizionamento:** la classe seleziona le statistiche ILR e le basi del decoder,
+  e condiziona il DDPM con classifier-free guidance.
+- **Loss:** MSE di ricostruzione per l'encoder e MSE sul rumore per il DDPM.
+- **Focus:** coerenza fisica delle bande spettrali generate.
 
-Configurazione, flussi e comandi in
-[`experiments/latent_unmixing_per_class_softmax/`](experiments/latent_unmixing_per_class_softmax/README.md).
+Configurazione, flussi e comandi in [`experiments/LLUM/`](experiments/LLUM/).
 
-## Latent unmixing per class large
+## DDPM
 
-- **Approccio:** variante indipendente di latent unmixing per classe, con maggiore
-  capacita sia nella ricostruzione sia nella generazione delle abundance.
-- **Architettura:** encoder piu ampio e banco di basi spettrali piu numeroso per
-  ciascuna classe; decoder lineare e unica U-Net DDPM piu ampia nello spazio ILR.
-- **Condizionamento:** la classe seleziona encoder, basi e statistiche ILR e
-  condiziona la U-Net tramite embedding e classifier-free guidance.
-- **Loss:** MSE di ricostruzione per gli encoder e MSE sul rumore per il DDPM.
-- **Focus:** misurare l'effetto della maggiore capacita su dettagli spaziali e
-  coerenza spettrale, con checkpoint, log e output separati dall'esperimento base.
+- **Approccio:** generazione diretta delle immagini multispettrali con DDPM.
+- **Architettura:** U-Net condizionale operante sulle 13 bande.
+- **Condizionamento:** label di classe e classifier-free guidance.
+- **Loss:** MSE sul rumore predetto.
+- **Focus:** riferimento per confrontare la generazione diretta con LLUM.
 
-Configurazione e comandi in
-[`experiments/latent_unmixing_per_class_large/`](experiments/latent_unmixing_per_class_large/README.md).
+Configurazione e codice in [`experiments/DDPM/`](experiments/DDPM/).
 
-## Stable Diffusion multispettrale (Kaggle)
+## SD1.5 (Kaggle)
 
 - **Approccio:** fine-tuning del VAE di SD 1.5 su EuroSAT MS, seguito da adattamento
   LoRA della U-Net nello spazio latente del VAE best congelato.

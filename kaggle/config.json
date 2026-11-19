@@ -4,6 +4,9 @@
     "fid_evaluation: batch size e caricamento dati della FID RGB per River",
     "paths: cartelle RGB reali e generate e risultati; percorsi relativi alla root del progetto"
   ],
+  "experiment": {
+    "name": "SD1.5"
+  },
   "fid_evaluation": {
     "batch_size": 32,
     "num_workers": 0
@@ -11,9 +14,9 @@
   "paths": {
     "fid_real_images": "data/EuroSAT_RGB/River",
     "fid_fake_images": "kaggle/eval/all-samples/RGB",
-    "fid_results": "outputs/results/stable_diffusion_msi/stable_diffusion_msi-eval_1-run_1/plots/fid",
+    "fid_results": "outputs/results/SD1.5/SD1.5-eval_1-run_1/plots/fid",
     "annotation_images": "kaggle/eval/img",
-    "annotation_plots": "outputs/results/stable_diffusion_msi/stable_diffusion_msi-eval_1-run_1/plots/annotations"
+    "annotation_plots": "outputs/results/SD1.5/SD1.5-eval_1-run_1/plots/annotations"
   },
   "data": {
     "normalization_max": 10000,

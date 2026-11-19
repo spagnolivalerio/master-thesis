@@ -1,0 +1,9 @@
+{
+  "checkpoint": "/home/valerio/universit\u00e0/master-thesis/experiments/LLUM/ddpm_checkpoints/LLUM_ddpm-run_1-best.pt",
+  "conditioning_class": "Highway",
+  "basis_class": "SeaLake",
+  "images": 100,
+  "inference_steps": 50,
+  "seed": 42,
+  "device": "cpu"
+}

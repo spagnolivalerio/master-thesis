@@ -12,16 +12,16 @@ from PIL import Image
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 CONFIG_PATHS = {
-    "Real": PROJECT_ROOT / "experiments/baseline/config.json",
-    "Latent Unmixing": PROJECT_ROOT / "experiments/latent_unmixing_per_class/config.json",
-    "Baseline": PROJECT_ROOT / "experiments/baseline/config.json",
-    "Stable Diffusion": PROJECT_ROOT / "kaggle/config.json",
+    "Real": PROJECT_ROOT / "experiments/DDPM/config.json",
+    "LLUM": PROJECT_ROOT / "experiments/LLUM/config.json",
+    "DDPM": PROJECT_ROOT / "experiments/DDPM/config.json",
+    "SD1.5": PROJECT_ROOT / "kaggle/config.json",
 }
 COLORS = {
     "Real": "#111111",
-    "Latent Unmixing": "#1F77B4",
-    "Baseline": "#2CA02C",
-    "Stable Diffusion": "#FF7F0E",
+    "LLUM": "#1F77B4",
+    "DDPM": "#2CA02C",
+    "SD1.5": "#FF7F0E",
 }
 OUTPUT_DIRECTORY = PROJECT_ROOT / "outputs/results/global_eval"
 
@@ -85,7 +85,7 @@ def collect_all_spectra(configs, mask_class):
                 unannotated,
             )
         }
-        for approach in ("Latent Unmixing", "Baseline", "Stable Diffusion"):
+        for approach in ("LLUM", "DDPM", "SD1.5"):
             config = configs[approach]
             generated_directory = config["paths"]["annotation_images"] / "fake"
             spectra[approach] = collect_spectra(
@@ -171,21 +171,21 @@ def plot_rmc_std_parallel(groups, band_names, wavelengths, output_path):
 def main():
     """Load all spectra and save the global comparison plots."""
     configs = {name: load_config(path) for name, path in CONFIG_PATHS.items()}
-    baseline_config = configs["Baseline"]
-    mask_class = baseline_config["annotation_evaluation"]["mask_class"]
+    ddpm_config = configs["DDPM"]
+    mask_class = ddpm_config["annotation_evaluation"]["mask_class"]
     groups = collect_all_spectra(configs, mask_class)
     OUTPUT_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
     plot_rmc_std_parallel(
         groups,
-        baseline_config["data"]["band_names"],
-        baseline_config["data"]["wavelengths_nm"],
+        ddpm_config["data"]["band_names"],
+        ddpm_config["data"]["wavelengths_nm"],
         OUTPUT_DIRECTORY / "global_rmc_std_parallel.png",
     )
     plot_rmc_comparison(
         groups,
-        baseline_config["data"]["wavelengths_nm"],
-        baseline_config["annotation_evaluation"]["y_limits"],
+        ddpm_config["data"]["wavelengths_nm"],
+        ddpm_config["annotation_evaluation"]["y_limits"],
         OUTPUT_DIRECTORY / "global_rmc_comparison.png",
     )
 

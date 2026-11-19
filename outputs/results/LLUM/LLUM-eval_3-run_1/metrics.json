@@ -1,0 +1,178 @@
+{
+  "checkpoint": "/home/valerio/universit\u00e0/master-thesis/experiments/LLUM/ddpm_checkpoints/LLUM_ddpm-run_1-best.pt",
+  "settings": {
+    "images_per_class": 100,
+    "batch_size": 8,
+    "inference_steps": 50,
+    "seed": 42
+  },
+  "base_class_counts": {
+    "AnnualCrop": {
+      "Highway": 17,
+      "Residential": 12,
+      "Forest": 12,
+      "Industrial": 12,
+      "River": 17,
+      "Pasture": 13,
+      "HerbaceousVegetation": 7,
+      "SeaLake": 5,
+      "PermanentCrop": 5
+    },
+    "Forest": {
+      "Highway": 12,
+      "AnnualCrop": 16,
+      "Pasture": 11,
+      "River": 12,
+      "Residential": 9,
+      "SeaLake": 16,
+      "Industrial": 11,
+      "PermanentCrop": 4,
+      "HerbaceousVegetation": 9
+    },
+    "HerbaceousVegetation": {
+      "Industrial": 13,
+      "Forest": 10,
+      "River": 13,
+      "Residential": 11,
+      "Highway": 10,
+      "SeaLake": 9,
+      "Pasture": 12,
+      "PermanentCrop": 10,
+      "AnnualCrop": 12
+    },
+    "Highway": {
+      "Industrial": 13,
+      "River": 11,
+      "PermanentCrop": 6,
+      "AnnualCrop": 9,
+      "Forest": 14,
+      "SeaLake": 15,
+      "Pasture": 10,
+      "Residential": 11,
+      "HerbaceousVegetation": 11
+    },
+    "Industrial": {
+      "SeaLake": 12,
+      "Pasture": 8,
+      "PermanentCrop": 13,
+      "Residential": 14,
+      "HerbaceousVegetation": 12,
+      "River": 12,
+      "AnnualCrop": 10,
+      "Forest": 9,
+      "Highway": 10
+    },
+    "Pasture": {
+      "HerbaceousVegetation": 14,
+      "Residential": 4,
+      "AnnualCrop": 13,
+      "SeaLake": 21,
+      "Highway": 14,
+      "PermanentCrop": 8,
+      "Forest": 9,
+      "Industrial": 12,
+      "River": 5
+    },
+    "PermanentCrop": {
+      "Pasture": 15,
+      "SeaLake": 15,
+      "Highway": 15,
+      "Industrial": 11,
+      "River": 11,
+      "Residential": 10,
+      "Forest": 7,
+      "HerbaceousVegetation": 7,
+      "AnnualCrop": 9
+    },
+    "Residential": {
+      "PermanentCrop": 10,
+      "Highway": 14,
+      "HerbaceousVegetation": 14,
+      "Industrial": 14,
+      "River": 8,
+      "Forest": 15,
+      "Pasture": 9,
+      "AnnualCrop": 8,
+      "SeaLake": 8
+    },
+    "River": {
+      "PermanentCrop": 12,
+      "Industrial": 16,
+      "Forest": 10,
+      "SeaLake": 15,
+      "Pasture": 7,
+      "HerbaceousVegetation": 10,
+      "Highway": 9,
+      "AnnualCrop": 13,
+      "Residential": 8
+    },
+    "SeaLake": {
+      "HerbaceousVegetation": 8,
+      "Pasture": 15,
+      "AnnualCrop": 10,
+      "Forest": 12,
+      "Residential": 11,
+      "PermanentCrop": 13,
+      "Industrial": 18,
+      "Highway": 9,
+      "River": 4
+    }
+  },
+  "per_class_metrics": {
+    "AnnualCrop": {
+      "rmc_rmse": 0.04977666854054276,
+      "rmc_mae": 0.04195614990515772,
+      "rmc_histogram_tv": 0.37538461538461537
+    },
+    "Forest": {
+      "rmc_rmse": 0.04426737116835492,
+      "rmc_mae": 0.03798393242391774,
+      "rmc_histogram_tv": 0.53
+    },
+    "HerbaceousVegetation": {
+      "rmc_rmse": 0.0147667681544498,
+      "rmc_mae": 0.011065535554117465,
+      "rmc_histogram_tv": 0.23230769230769235
+    },
+    "Highway": {
+      "rmc_rmse": 0.005898053925171315,
+      "rmc_mae": 0.004788192445208345,
+      "rmc_histogram_tv": 0.2561538461538462
+    },
+    "Industrial": {
+      "rmc_rmse": 0.02516411435460846,
+      "rmc_mae": 0.0228737344184192,
+      "rmc_histogram_tv": 0.39538461538461545
+    },
+    "Pasture": {
+      "rmc_rmse": 0.07770150616116898,
+      "rmc_mae": 0.05081651424649614,
+      "rmc_histogram_tv": 0.5123076923076924
+    },
+    "PermanentCrop": {
+      "rmc_rmse": 0.04100660308428431,
+      "rmc_mae": 0.03256405515787491,
+      "rmc_histogram_tv": 0.32461538461538464
+    },
+    "Residential": {
+      "rmc_rmse": 0.018937312236001213,
+      "rmc_mae": 0.013702660547887184,
+      "rmc_histogram_tv": 0.32076923076923075
+    },
+    "River": {
+      "rmc_rmse": 0.039218321303645415,
+      "rmc_mae": 0.03409353953083706,
+      "rmc_histogram_tv": 0.4130769230769232
+    },
+    "SeaLake": {
+      "rmc_rmse": 0.15025042673530936,
+      "rmc_mae": 0.1206702284755204,
+      "rmc_histogram_tv": 0.7253846153846154
+    }
+  },
+  "macro_metrics": {
+    "rmc_rmse": 0.046698714566353654,
+    "rmc_mae": 0.03705145427054361,
+    "rmc_histogram_tv": 0.4085384615384616
+  }
+}
