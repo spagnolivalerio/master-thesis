@@ -1,0 +1,86 @@
+{
+  "DDPM": [
+    {
+      "class": "AnnualCrop",
+      "fid": 104.61637308604782
+    },
+    {
+      "class": "Forest",
+      "fid": 50.96733216411363
+    },
+    {
+      "class": "HerbaceousVegetation",
+      "fid": 59.23032538702188
+    },
+    {
+      "class": "Highway",
+      "fid": 109.75352350905189
+    },
+    {
+      "class": "Industrial",
+      "fid": 112.17690307810983
+    },
+    {
+      "class": "Pasture",
+      "fid": 69.85137984353531
+    },
+    {
+      "class": "PermanentCrop",
+      "fid": 85.41748100135254
+    },
+    {
+      "class": "Residential",
+      "fid": 82.41359433139581
+    },
+    {
+      "class": "River",
+      "fid": 109.04634030689442
+    },
+    {
+      "class": "SeaLake",
+      "fid": 132.42689281369934
+    }
+  ],
+  "LLUM": [
+    {
+      "class": "AnnualCrop",
+      "fid": 110.28592756982434
+    },
+    {
+      "class": "Forest",
+      "fid": 89.2698516765042
+    },
+    {
+      "class": "HerbaceousVegetation",
+      "fid": 64.70839957798609
+    },
+    {
+      "class": "Highway",
+      "fid": 83.01385731357482
+    },
+    {
+      "class": "Industrial",
+      "fid": 66.52796668521626
+    },
+    {
+      "class": "Pasture",
+      "fid": 100.72067350281279
+    },
+    {
+      "class": "PermanentCrop",
+      "fid": 89.30156983519339
+    },
+    {
+      "class": "Residential",
+      "fid": 68.07520750601032
+    },
+    {
+      "class": "River",
+      "fid": 80.61743564004507
+    },
+    {
+      "class": "SeaLake",
+      "fid": 63.571447030836396
+    }
+  ]
+}

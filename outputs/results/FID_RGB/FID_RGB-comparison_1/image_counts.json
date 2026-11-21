@@ -1,0 +1,12 @@
+{
+  "AnnualCrop": 3000,
+  "Forest": 3000,
+  "HerbaceousVegetation": 3000,
+  "Highway": 2500,
+  "Industrial": 2500,
+  "Pasture": 2000,
+  "PermanentCrop": 2500,
+  "Residential": 3000,
+  "River": 2500,
+  "SeaLake": 3000
+}
